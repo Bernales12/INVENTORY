@@ -47,6 +47,7 @@ window.APP_CONFIG=window.APP_CONFIG||{SUPABASE_URL:'https://qejpamcqqemisvvkgiqs
 const DAY=864e5,C=window.APP_CONFIG||{};let S={products:[],orders:[],ledger:[]},tab='dash',wd='',user=null,db=null;
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const P=n=>'₱'+Math.round(n).toLocaleString('en-PH');
+const pn=p=>p.name+(p.size?' '+p.size:'');const uname=e=>e.endsWith('@example.com')?e.slice(0,-12):e;
 const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
 const cash=()=>sum(S.ledger,e=>e.t==='sale'||e.t==='capital'?e.a:-e.a);
 const dels=()=>S.orders.filter(o=>o.st==='Delivered');
@@ -66,9 +67,9 @@ const err=a.error||b.error||c.error;if(err)return toast(err.message);S={products
 
 let mode='in',busy=false;
 function setMode(m){mode=m;loginView()}
-async function authGo(){if(busy)return;const em=mode==='reset'?'':val('em'),pwe=document.getElementById('pw'),pw=pwe?pwe.value:'';
+async function authGo(){if(busy)return;let em=mode==='reset'?'':val('em').toLowerCase();if(em&&!em.includes('@'))em+='@example.com';const pwe=document.getElementById('pw'),pw=pwe?pwe.value:'';
 const msg=t=>{document.getElementById('am').innerHTML=t},bad=t=>msg('<span class="bad">'+esc(t)+'</span>'),ok=t=>msg('<span class="good">'+esc(t)+'</span>');
-if(mode!=='reset'&&!/^\S+@\S+\.\S+$/.test(em))return bad('Enter a valid email.');
+if(mode!=='reset'&&!/^\S+@\S+\.\S+$/.test(em))return bad('Enter your username.');
 if(mode!=='forgot'&&pw.length<6)return bad('Password must be at least 6 characters.');
 busy=true;msg('Please wait…');let r;
 try{
@@ -84,25 +85,25 @@ else if(mode==='reset')mode='in';
 async function signOut(){await db.auth.signOut();S={products:[],orders:[],ledger:[]}}
 function loginView(){document.getElementById('nav').innerHTML='';
 const T={in:'Sign in',up:'Create account',forgot:'Reset password',reset:'Set a new password'}[mode];
-const f=(id,l,ac)=>'<label>'+l+'<input id="'+id+'" type="'+(id==='em'?'email':'password')+'" autocomplete="'+ac+'"></label>';
+const f=(id,l,ac)=>'<label>'+l+'<input id="'+id+'" type="'+(id==='em'?'text':'password')+'" autocomplete="'+ac+'"></label>';
 const lk=(m,t)=>'<button class="b o" onclick="setMode(\''+m+'\')">'+t+'</button>';
 document.getElementById('main').innerHTML='<div class="card" style="max-width:380px;margin:8vh auto" onkeydown="if(event.key===\'Enter\')authGo()"><h2>Tindahan</h2><h3>'+T+'</h3>'+
 (!db?'<p class="bad">Supabase is not connected. '+esc(why)+'</p>':
-'<div class="f" style="flex-direction:column;align-items:stretch">'+(mode!=='reset'?f('em','Email','email'):'')+(mode!=='forgot'?f('pw',mode==='in'?'Password':'New password',mode==='in'?'current-password':'new-password'):'')+
-'<button class="b" onclick="authGo()">'+T+'</button>'+(mode==='in'?lk('forgot','Forgot password?'):mode==='reset'?'':lk('in','Back to sign in'))+'<div id="am" role="status" aria-live="polite"></div></div>')+'</div>'}
+'<div class="f" style="flex-direction:column;align-items:stretch">'+(mode!=='reset'?f('em','Username','username'):'')+(mode!=='forgot'?f('pw',mode==='in'?'Password':'New password',mode==='in'?'current-password':'new-password'):'')+
+'<button class="b" onclick="authGo()">'+T+'</button>'+(mode==='in'?'':mode==='reset'?'':lk('in','Back to sign in'))+'<div id="am" role="status" aria-live="polite"></div></div>')+'</div>'}
 
-async function addProduct(){const name=val('pn'),cost=num('pc'),price=num('pp'),stock=Math.floor(num('ps'));
+async function addProduct(){const name=val('pn'),size=val('pz'),cost=num('pc'),price=num('pp'),stock=Math.floor(num('ps'));
 if(!name||cost<=0||price<=0)return toast('Fill in the name, original price and selling price.');
-if(await run(db.from('products').insert({name,cost,price,stock})))load()}
+if(await run(db.from('products').insert({name,size,cost,price,stock})))load()}
 async function setP(id,f,v){if(await run(db.from('products').update({[f]:Math.max(0,parseFloat(v)||0)}).eq('id',id)))load()}
 async function delP(id){if(await run(db.from('products').delete().eq('id',id)))load()}
 async function restock(id){const p=S.products.find(x=>x.id==id),q=Math.floor(parseFloat(document.getElementById('r'+id).value)||0);
 if(q<=0)return toast('Enter how many to buy.');const c=q*p.cost;
 if(c>cash())return toast('Kulang ang pondo: need '+P(c)+', you have '+P(cash())+' (short by '+P(c-cash())+').');
-if(await run(db.from('products').update({stock:p.stock+q}).eq('id',id))&&await run(db.from('ledger').insert({t:'restock',a:c,note:q+' × '+p.name+' @ '+P(p.cost)}))){await load();toast('Restocked '+q+' '+p.name+' for '+P(c))}}
+if(await run(db.from('products').update({stock:p.stock+q}).eq('id',id))&&await run(db.from('ledger').insert({t:'restock',a:c,note:q+' × '+pn(p)+' @ '+P(p.cost)}))){await load();toast('Restocked '+q+' '+pn(p)+' for '+P(c))}}
 async function addOrder(){const p=S.products.find(x=>x.id==val('op')),q=Math.floor(num('oq'));
 if(!p||q<=0)return toast('Pick a product and quantity.');if(q>p.stock)return toast('Only '+p.stock+' in stock.');
-if(await run(db.from('products').update({stock:p.stock-q}).eq('id',p.id))&&await run(db.from('orders').insert({pid:p.id,name:p.name,qty:q,cost:p.cost,price:p.price,cust:val('oc')||'Walk-in',addr:val('oa')||'-'})))load()}
+if(await run(db.from('products').update({stock:p.stock-q}).eq('id',p.id))&&await run(db.from('orders').insert({pid:p.id,name:pn(p),qty:q,cost:p.cost,price:p.price})))load()}
 async function adv(id){const o=S.orders.find(x=>x.id==id),n=o.st==='Pending'?'Out':'Delivered';
 if(await run(db.from('orders').update({st:n}).eq('id',id))&&(n!=='Delivered'||await run(db.from('ledger').insert({t:'sale',a:o.price*o.qty,note:o.qty+' × '+o.name}))))load()}
 async function cancel(id){const o=S.orders.find(x=>x.id==id),p=S.products.find(x=>x.id==o.pid);
@@ -129,14 +130,14 @@ return '<h2>Welcome back!</h2><div class="grid">'+
 (L.length?'<div class="note">'+L.length+' item(s) low or out. Restocking to 10 each costs <b>'+P(need())+'</b>. '+(short?'<span class="bad">Cash is short by '+P(short)+'.</span>':'<span class="good">You have enough cash.</span>')+'</div>':'<div class="note good">Stock levels look fine.</div>')+
 '</div><div class="card"><h3>Profit per month</h3>'+chart()+'</div><div class="card"><h3>Top products by profit</h3>'+(t.length?t.map(([n,v])=>'<div class="bar"><span>'+esc(n)+'</span><i style="width:'+Math.max(6,v/mx*100)+'px"></i><span>'+P(v)+'</span></div>').join(''):'<p>No delivered orders yet.</p>')+'</div></div>'}
 
-function inv(){return '<h2>Inventory</h2><div class="card" style="margin-bottom:14px"><h3>Add product</h3><div class="f"><label>Name<input id="pn"></label><label>Original price (puhunan)<input id="pc" type="number" min="0"></label><label>Selling price<input id="pp" type="number" min="0"></label><label>Stock<input id="ps" type="number" min="0" value="0"></label><button class="b" onclick="addProduct()">Add product</button></div></div>'+
+function inv(){return '<h2>Inventory</h2><div class="card" style="margin-bottom:14px"><h3>Add product</h3><div class="f"><label>Name<input id="pn"></label><label>Size (e.g. 100 ml)<input id="pz" placeholder="100 ml"></label><label>Original price (puhunan)<input id="pc" type="number" min="0"></label><label>Selling price<input id="pp" type="number" min="0"></label><label>Stock<input id="ps" type="number" min="0" value="0"></label><button class="b" onclick="addProduct()">Add product</button></div></div>'+
 '<div class="card sc"><table><tr><th>Product</th><th>Original price</th><th>Selling price</th><th>Profit / unit</th><th>Stock</th><th>Buy more</th><th></th></tr>'+
-S.products.map(p=>'<tr><td>'+esc(p.name)+'</td><td><input type="number" value="'+p.cost+'" onchange="setP('+p.id+',\'cost\',this.value)" aria-label="Original price"></td><td><input type="number" value="'+p.price+'" onchange="setP('+p.id+',\'price\',this.value)" aria-label="Selling price"></td><td class="'+(p.price>p.cost?'good':'bad')+'">'+P(p.price-p.cost)+'</td><td class="'+(p.stock==0?'bad':p.stock<=5?'warn':'')+'"><b>'+p.stock+'</b></td><td><input class="q" id="r'+p.id+'" type="number" min="1" value="10" aria-label="Quantity to buy"> <button class="b o" onclick="restock('+p.id+')">Restock</button></td><td><button class="b o" onclick="delP('+p.id+')" aria-label="Delete">✕</button></td></tr>').join('')+'</table></div><p style="color:var(--mut);font-size:13px">Restock takes the cost out of your cash on hand ('+P(cash())+').</p>'}
+S.products.map(p=>'<tr><td>'+esc(p.name)+(p.size?'<br><small style="color:var(--mut)">'+esc(p.size)+'</small>':'')+'</td><td><input type="number" value="'+p.cost+'" onchange="setP('+p.id+',\'cost\',this.value)" aria-label="Original price"></td><td><input type="number" value="'+p.price+'" onchange="setP('+p.id+',\'price\',this.value)" aria-label="Selling price"></td><td class="'+(p.price>p.cost?'good':'bad')+'">'+P(p.price-p.cost)+'</td><td class="'+(p.stock==0?'bad':p.stock<=5?'warn':'')+'"><b>'+p.stock+'</b></td><td><input class="q" id="r'+p.id+'" type="number" min="1" value="10" aria-label="Quantity to buy"> <button class="b o" onclick="restock('+p.id+')">Restock</button></td><td><button class="b o" onclick="delP('+p.id+')" aria-label="Delete">✕</button></td></tr>').join('')+'</table></div><p style="color:var(--mut);font-size:13px">Restock takes the cost out of your cash on hand ('+P(cash())+').</p>'}
 
 function ord(){const lab={Pending:'Pending',Out:'Out for delivery',Delivered:'Delivered',Cancelled:'Cancelled'},nx={Pending:'Send out',Out:'Mark delivered'};
-return '<h2>Orders & delivery</h2><div class="card" style="margin-bottom:14px"><h3>New order</h3><div class="f"><label>Product<select id="op">'+S.products.filter(p=>p.stock>0).map(p=>'<option value="'+p.id+'">'+esc(p.name)+' ('+p.stock+' left)</option>').join('')+'</select></label><label>Qty<input id="oq" type="number" min="1" value="1" style="width:70px"></label><label>Customer<input id="oc"></label><label>Address<input id="oa"></label><button class="b" onclick="addOrder()">Create order</button></div></div>'+
-'<div class="card sc"><table><tr><th>Order</th><th>Customer</th><th>Total</th><th>Profit</th><th>Status</th><th></th></tr>'+
-S.orders.slice().reverse().map(o=>'<tr><td>'+o.qty+' × '+esc(o.name)+'</td><td>'+esc(o.cust)+'<br><small style="color:var(--mut)">'+esc(o.addr)+'</small></td><td>'+P(o.price*o.qty)+'</td><td class="good">'+P((o.price-o.cost)*o.qty)+'</td><td><span class="pill p-'+o.st+'">'+lab[o.st]+'</span></td><td>'+(nx[o.st]?'<button class="b" onclick="adv('+o.id+')">'+nx[o.st]+'</button> <button class="b o" onclick="cancel('+o.id+')">Cancel</button>':'')+'</td></tr>').join('')+'</table></div><p style="color:var(--mut);font-size:13px">Money from an order goes into your cash only after it is marked delivered.</p>'}
+return '<h2>Orders & delivery</h2><div class="card" style="margin-bottom:14px"><h3>New order</h3><div class="f"><label>Product<select id="op">'+S.products.filter(p=>p.stock>0).map(p=>'<option value="'+p.id+'">'+esc(pn(p))+' ('+p.stock+' left)</option>').join('')+'</select></label><label>Qty<input id="oq" type="number" min="1" value="1" style="width:70px"></label><button class="b" onclick="addOrder()">Create order</button></div></div>'+
+'<div class="card sc"><table><tr><th>Date</th><th>Order</th><th>Total</th><th>Profit</th><th>Status</th><th></th></tr>'+
+S.orders.slice().reverse().map(o=>'<tr><td>'+new Date(o.d).toLocaleDateString('en-PH',{month:'short',day:'numeric'})+'</td><td>'+o.qty+' × '+esc(o.name)+'</td><td>'+P(o.price*o.qty)+'</td><td class="good">'+P((o.price-o.cost)*o.qty)+'</td><td><span class="pill p-'+o.st+'">'+lab[o.st]+'</span></td><td>'+(nx[o.st]?'<button class="b" onclick="adv('+o.id+')">'+nx[o.st]+'</button> <button class="b o" onclick="cancel('+o.id+')">Cancel</button>':'')+'</td></tr>').join('')+'</table></div><p style="color:var(--mut);font-size:13px">Money from an order goes into your cash only after it is marked delivered.</p>'}
 
 function cashv(){const L=S.ledger.slice().reverse();
 return '<h2>Cash & withdrawals</h2><div class="grid"><div class="card k"><b>'+P(cash())+'</b><span>Cash on hand</span></div><div class="card k"><b class="good">'+P(safe())+'</b><span>Profit you can take</span></div><div class="card k"><b>'+P(taken())+'</b><span>Taken so far</span></div><div class="card k"><b class="'+(need()>cash()?'bad':'')+'">'+P(need())+'</b><span>Needed to restock low items</span></div></div>'+
@@ -144,10 +145,23 @@ return '<h2>Cash & withdrawals</h2><div class="grid"><div class="card k"><b>'+P(
 '<div class="card"><h3>Add capital</h3><div class="f"><label>Amount<input id="ca" type="number" min="0"></label><button class="b" onclick="capital()">Add</button></div></div></div>'+
 '<div class="card sc"><h3>History</h3><table><tr><th>Date</th><th>Type</th><th>Details</th><th>Amount</th></tr>'+L.map(e=>{const inn=e.t==='sale'||e.t==='capital';return '<tr><td>'+new Date(e.d).toLocaleDateString('en-PH',{month:'short',day:'numeric'})+'</td><td>'+({sale:'Sale',capital:'Capital',restock:'Restock',withdraw:'Withdrawal'})[e.t]+'</td><td>'+esc(e.note)+'</td><td class="'+(inn?'good':'bad')+'">'+(inn?'+':'−')+P(e.a)+'</td></tr>'}).join('')+'</table></div>'}
 
-function draw(){if(!user){loginView();return}const T=[['dash','Dashboard'],['inv','Inventory'],['ord','Orders & delivery'],['cash','Cash & withdrawals']];
+function setv(){return '<h2>Account settings</h2><p style="margin-top:-6px">Current username: <b>'+esc(uname(user.email))+'</b></p><div class="grid w"><div class="card"><h3>Change username</h3><div class="f"><label>New username<input id="nu" autocomplete="off"></label><label>Current password<input id="cu_pw" type="password" autocomplete="current-password"></label><button class="b" onclick="chgUser()">Save username</button></div></div><div class="card"><h3>Change password</h3><div class="f"><label>Current password<input id="cp_old" type="password" autocomplete="current-password"></label><label>New password<input id="cp_new" type="password" autocomplete="new-password"></label><label>Confirm new password<input id="cp_new2" type="password" autocomplete="new-password"></label><button class="b" onclick="chgPass()">Save password</button></div></div></div>'}
+async function chgUser(){let n=val('nu').toLowerCase();const pw=document.getElementById('cu_pw').value;
+if(!n)return toast('Enter a new username.');if(!n.includes('@'))n+='@example.com';
+if(!/^\S+@\S+\.\S+$/.test(n))return toast('That username is not valid.');
+if(!await run(db.auth.signInWithPassword({email:user.email,password:pw})))return;
+const{error}=await db.auth.updateUser({email:n});if(error)return toast(error.message);
+const r=await db.auth.getUser();if(r.data&&r.data.user)user=r.data.user;
+toast(user.email===n?'Username changed.':'Saved, but not applied yet. Turn off "Confirm email" in Supabase (Authentication → Providers → Email).');draw()}
+async function chgPass(){const o=document.getElementById('cp_old').value,a=document.getElementById('cp_new').value,b=document.getElementById('cp_new2').value;
+if(a.length<6)return toast('New password must be at least 6 characters.');if(a!==b)return toast('The new passwords do not match.');
+if(!await run(db.auth.signInWithPassword({email:user.email,password:o})))return;
+if(await run(db.auth.updateUser({password:a}))){toast('Password changed.');draw()}}
+
+function draw(){if(!user){loginView();return}const T=[['dash','Dashboard'],['inv','Inventory'],['ord','Orders & delivery'],['cash','Cash & withdrawals'],['set','Settings']];
 document.getElementById('nav').innerHTML='<h1>Tindahan</h1>'+T.map(t=>'<button class="'+(tab==t[0]?'on':'')+'" onclick="go(\''+t[0]+'\')">'+t[1]+'</button>').join('');
-document.getElementById('nav').insertAdjacentHTML('beforeend','<button onclick="signOut()" style="margin-top:auto">Sign out<br><small>'+esc(user.email)+'</small></button>');
-document.getElementById('main').innerHTML=({dash,inv,ord,cash:cashv})[tab]();if(tab=='cash'&&wd)preview()}
+document.getElementById('nav').insertAdjacentHTML('beforeend','<button onclick="signOut()" style="margin-top:auto">Sign out<br><small>'+esc(uname(user.email))+'</small></button>');
+document.getElementById('main').innerHTML=({dash,inv,ord,cash:cashv,set:setv})[tab]();if(tab=='cash'&&wd)preview()}
 let why='';
 if(!window.APP_CONFIG)why='config.js was not found. Keep it in the same folder as index.html.';
 else if(!C.SUPABASE_URL||!C.SUPABASE_ANON_KEY||C.SUPABASE_URL.includes('YOUR-PROJECT')||C.SUPABASE_ANON_KEY.includes('YOUR-ANON'))why='config.js still has the placeholder values.';
