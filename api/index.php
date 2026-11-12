@@ -7,8 +7,8 @@
 <meta name="description" content="Private inventory, profit and sales tracker.">
 <title>Tindahan Inventory</title>
 <style>
-:root{--bg:#cfe3ec;--side:#2a5468;--card:#f6fafc;--ink:#173a4d;--mut:#44636f;--line:#b4cbd6;--acc:#3f6a80;--good:#1f7556;--bad:#a8481f;--warn:#8f5f00;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root{--bg:#10222b;--side:#0b181e;--card:#183241;--ink:#e3f0f5;--mut:#9fbdca;--line:#2a4a5a;--acc:#8cbad1;--good:#5fd0a5;--bad:#f09068;--warn:#e8b64c}}
+:root{--bg:#efecfc;--side:#2b1b78;--card:#ffffff;--ink:#1d1650;--mut:#5b5784;--line:#dcd7f3;--acc:#5b3fd6;--good:#1f7556;--bad:#a8481f;--warn:#8f5f00;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root{--bg:#14102e;--side:#0d0a24;--card:#1f1a47;--ink:#ece9ff;--mut:#aaa5d6;--line:#352f69;--acc:#a99bff;--good:#5fd0a5;--bad:#f09068;--warn:#e8b64c}}
 *{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
 body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -58,7 +58,7 @@ dialog::backdrop{background:rgba(8,30,42,.6)}
 #cb{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:560px;margin:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;z-index:25;box-shadow:0 10px 30px rgba(8,30,42,.3)}
 #cb[hidden]{display:none}#cb p{margin:0 0 10px}#cb div{display:flex;gap:8px;flex-wrap:wrap}
 @media(max-width:720px){.app{flex-direction:column}nav{width:auto;flex-direction:row;overflow-x:auto;padding:10px;position:sticky;top:0;z-index:10}nav h1{display:none}nav button{border-radius:10px;white-space:nowrap}}
-main.lg{display:grid;place-items:center;min-height:100vh;padding:20px;background:linear-gradient(160deg,#1c4153,#3a6f88 58%,#7fb0c8)}
+main.lg{display:grid;place-items:center;min-height:100vh;padding:20px;background:linear-gradient(160deg,#241565,#4a30c8 58%,#9b86f5)}
 .lc{width:100%;max-width:380px;padding:32px 28px 22px;border-radius:18px;text-align:center;box-shadow:0 24px 60px rgba(8,30,42,.35)}
 .lb{width:56px;height:56px;border-radius:16px;background:var(--side);color:#e3f0f5;display:grid;place-items:center;margin:0 auto 14px}
 .lc h1{margin:0;font-size:27px;font-weight:800;letter-spacing:-.3px}
@@ -70,18 +70,42 @@ main.lg{display:grid;place-items:center;min-height:100vh;padding:20px;background
 .pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--acc);cursor:pointer;font:inherit;font-size:13px;font-weight:700;padding:8px 9px}
 .lf .b{width:100%;padding:12px;font-size:15px;border-radius:10px;margin-top:4px}
 #am{min-height:20px;font-size:13px;text-align:center}.cn{font-size:12px;color:var(--mut);text-align:center;margin:0}
-nav{background:linear-gradient(180deg,#2f6179,#1f4357);box-shadow:2px 0 18px rgba(8,30,42,.18)}
-nav h1{font-size:19px}nav button{transition:background .15s}nav button:hover:not(.on){background:rgba(255,255,255,.1)}
+body{background:radial-gradient(900px 420px at 88% -5%,rgba(139,108,255,.28),transparent 60%),radial-gradient(700px 400px at 8% 105%,rgba(139,108,255,.24),transparent 60%),var(--bg);background-attachment:fixed}
+nav{background:linear-gradient(180deg,#2b1b78,#190f4e);box-shadow:2px 0 22px rgba(30,15,90,.25);width:230px}
+nav h1{display:flex;align-items:center;gap:10px;font-size:20px;margin:0 6px 22px}nav h1 svg{width:34px;height:34px;flex:none}nav h1 small{display:block;font-size:12px;font-weight:400;opacity:.8}
+nav button{display:flex;align-items:center;gap:12px;border-radius:12px;transition:background .15s}nav button:hover:not(.on){background:rgba(255,255,255,.1)}
+nav button.on{background:linear-gradient(90deg,#5a3fe0,#7b63f5);color:#fff;box-shadow:0 4px 14px rgba(90,63,224,.45)}
+.em{font-size:12px;color:#c9c0f5;padding:6px 14px;word-break:break-all}.so{border-top:1px solid rgba(255,255,255,.15);border-radius:0!important;padding-top:14px!important}
+.m{display:none}
 h2{font-size:24px;letter-spacing:-.3px}
-.card{border-radius:16px;box-shadow:0 1px 2px rgba(8,30,42,.06),0 6px 20px rgba(8,30,42,.07)}
+.card{border-radius:16px;box-shadow:0 1px 2px rgba(30,15,90,.06),0 8px 24px rgba(30,15,90,.08)}
 .k{border:0;border-left:4px solid var(--acc)}.k b{font-size:28px}
-button.b{background:linear-gradient(180deg,#3a6e87,#2a5468);box-shadow:0 1px 2px rgba(8,30,42,.25);transition:transform .1s,filter .15s}
-button.b:hover{filter:brightness(1.12)}button.b:active{transform:translateY(1px)}
+button.b{background:linear-gradient(180deg,#6a4ef0,#4a2fd0);box-shadow:0 2px 6px rgba(74,47,208,.35);transition:transform .1s,filter .15s}
+button.b:hover{filter:brightness(1.1)}button.b:active{transform:translateY(1px)}
 button.b.o{background:transparent;box-shadow:none;color:var(--ink)}
-th{text-transform:uppercase;font-size:11px;letter-spacing:.6px}tr:hover td{background:rgba(63,106,128,.07)}
+th{text-transform:uppercase;font-size:11px;letter-spacing:.6px}tr:hover td{background:rgba(91,63,214,.07)}
 .pill{padding:3px 11px}.p-Delivered{background:rgba(31,117,86,.14)}.p-Pending,.p-Out{background:rgba(143,95,0,.14)}
 .pk button{border-radius:12px;transition:transform .12s,border-color .15s}.pk button:hover:not(:disabled){border-color:var(--acc);transform:translateY(-1px)}
-input:focus,select:focus{border-color:var(--acc)}dialog{box-shadow:0 24px 70px rgba(8,30,42,.4)}
+input:focus,select:focus{border-color:var(--acc)}dialog{box-shadow:0 24px 70px rgba(20,10,70,.45)}
+.wh{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}.wh h2{font-size:30px;font-weight:800;margin:0}.wh p{margin:2px 0 0;color:var(--mut)}
+.dp{display:flex;align-items:center;gap:8px;background:var(--card);border-radius:99px;padding:9px 16px;font-weight:600;box-shadow:0 2px 10px rgba(30,15,90,.08)}
+.kg{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-bottom:14px}
+.kc{display:flex;align-items:center;gap:14px;padding:16px;border-radius:18px;min-width:0;background:linear-gradient(135deg,rgba(var(--r),.2),rgba(var(--r),.04)),var(--card);box-shadow:0 1px 2px rgba(30,15,90,.06),0 8px 24px rgba(30,15,90,.08)}
+.ci{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;color:#fff;flex:none;background:var(--c)}
+.kc b{display:block;font-size:26px;line-height:1.1}.kc small{color:var(--mut);font-size:14px}
+.pn{overflow:hidden}.ph{display:flex;align-items:center;gap:10px;margin:-16px -16px 14px;padding:12px 16px;color:#fff;font-weight:700;font-size:16px;background:var(--g)}
+.bar i{background:linear-gradient(90deg,#0f8a55,#17b676)}
+@media(max-width:720px){
+.app{padding-bottom:78px}main{padding:14px 12px}
+nav{position:fixed;top:auto;bottom:0;left:0;right:0;width:auto;flex-direction:row;justify-content:space-around;gap:0;padding:6px 6px calc(6px + env(safe-area-inset-bottom,0px));z-index:15;overflow-x:auto;box-shadow:0 -4px 20px rgba(30,15,90,.3)}
+nav button{flex-direction:column;gap:2px;font-size:11px;padding:6px 8px;min-width:54px;justify-content:center;text-align:center}
+.d{display:none}.m{display:inline}.em{display:none}.so{border:0;padding:6px 8px!important;margin-top:0!important}
+#toast{bottom:calc(84px + env(safe-area-inset-bottom,0px))}
+.wh h2{font-size:24px}.dp{padding:7px 12px;font-size:14px}
+.kg{grid-template-columns:repeat(2,1fr);gap:10px}.kc{padding:12px;gap:10px}.ci{width:42px;height:42px}.kc b{font-size:20px}.kc small{font-size:12px}
+.card{padding:14px}.ph{margin:-14px -14px 12px}h2{font-size:21px}
+.f label{flex:1 1 130px}.f input{width:100%}
+}
 </style></head><body>
 <a class="skip" href="#main">Skip to content</a>
 <div class="app"><nav id="nav" aria-label="Main"></nav><main id="main" tabindex="-1"></main></div>
@@ -249,13 +273,19 @@ dels().forEach(o=>{const d=new Date(o.d),x=m.find(y=>y.k==d.getFullYear()+'-'+d.
 const mx=Math.max(1,...m.map(x=>x.v));
 return '<svg viewBox="0 0 360 170" width="100%" role="img" aria-label="Profit per month: '+m.map(x=>x.l+' '+P(x.v)).join(', ')+'">'+m.map((x,i)=>{const h=x.v/mx*110,X=14+i*57;return '<rect x="'+X+'" y="'+(130-h)+'" width="40" height="'+h+'" rx="5" fill="var(--acc)"/><text x="'+(X+20)+'" y="'+(124-h)+'" text-anchor="middle" font-size="10" fill="var(--ink)">'+(x.v?P(x.v):'')+'</text><text x="'+(X+20)+'" y="150" text-anchor="middle" font-size="11" fill="var(--mut)">'+x.l+'</text>'}).join('')+'</svg>'}
 
+const IC={home:'<path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M10 20v-6h4v6"/>',box:'<path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/>',refresh:'<path d="M21 12a9 9 0 0 1-15.5 6.2L3 16"/><path d="M3 21v-5h5"/><path d="M3 12A9 9 0 0 1 18.5 5.8L21 8"/><path d="M21 3v5h-5"/>',cart:'<circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M2 3h3l2.7 12.4a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6"/>',wallet:'<path d="M3 7a2 2 0 0 1 2-2h13v4"/><path d="M3 7v11a2 2 0 0 0 2 2h15V9H5a2 2 0 0 1-2-2z"/><circle cx="16" cy="14.5" r="1"/>',gear:'<circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/>',out:'<path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/>',peso:'<path d="M7 4v16"/><path d="M7 4h6a4 4 0 0 1 0 8H7"/><path d="M4 8h12M4 11h12"/>',trend:'<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',hourglass:'<path d="M6 2h12M6 22h12"/><path d="M7 2c0 5 5 6 5 10s-5 5-5 10M17 2c0 5-5 6-5 10s5 5 5 10"/>',trophy:'<path d="M8 21h8M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>',cal:'<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'};
+const ic=n=>'<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+IC[n]+'</svg>';
 function dash(){const L=low(),short=Math.max(0,need()-cash()),st=pending();
 const top={};dels().forEach(o=>top[o.name]=(top[o.name]||0)+(o.price-o.cost)*o.qty);const t=Object.entries(top).sort((a,b)=>b[1]-a[1]).slice(0,6),mx=t[0]?t[0][1]:1;
-return '<h2>Welcome back!</h2><div class="grid">'+
-[[S.products.length,'Products'],[sum(S.products,p=>p.stock),'Units in stock'],[P(cash()),'Cash on hand'],['<span class="good">'+P(profit())+'</span>','Total profit'],[st.length,'Pending sales'],['<span class="'+(L.length?'bad':'')+'">'+S.products.filter(p=>p.stock==0).length+'</span>','Out of stock']].map(x=>'<div class="card k"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join('')+'</div>'+
-'<div class="grid w"><div class="card"><h3>Profit vs. restock money</h3><p style="margin:0 0 6px">Profit you can take: <b class="good">'+P(safe())+'</b><br>Already taken: <b>'+P(taken())+'</b></p>'+
+const kc=(i,v,l,c,r)=>'<div class="kc" style="--c:'+c+';--r:'+r+'"><span class="ci">'+ic(i)+'</span><div><b>'+v+'</b><small>'+l+'</small></div></div>',
+ph=(i,x,g)=>'<div class="ph" style="--g:linear-gradient(90deg,'+g+')">'+ic(i)+'<span>'+x+'</span></div>',
+dt=new Date().toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+return '<div class="wh"><div><h2>Welcome back! 👋</h2><p>Here’s what’s happening in your store today.</p></div><div class="dp">'+ic('cal')+dt+'</div></div>'+
+'<div class="kg">'+kc('box',S.products.length,'Products','#4f35e0','79,53,224')+kc('box',sum(S.products,p=>p.stock),'Units in stock','#16a06e','22,160,110')+kc('peso',P(cash()),'Cash on hand','#f27818','242,120,24')+kc('trend',P(profit()),'Total profit','#2570e6','37,112,230')+'</div>'+
+'<div class="kg">'+kc('hourglass',st.length,'Pending sales','#6d5bd0','109,91,208')+kc('box','<span class="'+(S.products.some(p=>p.stock==0)?'bad':'')+'">'+S.products.filter(p=>p.stock==0).length+'</span>','Out of stock','#8a86a8','138,134,168')+'</div>'+
+'<div class="grid w"><div class="card pn">'+ph('trend','Profit vs. restock money','#3b22b8,#6a4ef0')+'<p style="margin:0 0 6px">Profit you can take: <b class="good">'+P(safe())+'</b><br>Already taken: <b>'+P(taken())+'</b></p>'+
 (L.length?'<div class="note">'+L.length+' item(s) low or out. Restocking to 10 each costs <b>'+P(need())+'</b>. '+(short?'<span class="bad">Cash is short by '+P(short)+'.</span>':'<span class="good">You have enough cash.</span>')+'</div>':'<div class="note good">Stock levels look fine.</div>')+
-'</div><div class="card"><h3>Profit per month</h3>'+chart()+'</div><div class="card"><h3>Top products by profit</h3>'+(t.length?t.map(([n,v])=>'<div class="bar"><span>'+esc(n)+'</span><i style="width:'+Math.max(6,v/mx*100)+'px"></i><span>'+P(v)+'</span></div>').join(''):'<p>No bought sales yet. Press Buy on a sale to see profit here.</p>')+'</div></div>'}
+'</div><div class="card pn">'+ph('cal','Profit per month','#1f4fd0,#3b8cf0')+chart()+'</div><div class="card pn">'+ph('trophy','Top products by profit','#0f8a55,#17b676')+(t.length?t.map(([n,v])=>'<div class="bar"><span>'+esc(n)+'</span><i style="width:'+Math.max(6,v/mx*100)+'px"></i><span>'+P(v)+'</span></div>').join(''):'<p>No bought sales yet. Press Buy on a sale to see profit here.</p>')+'</div></div>'}
 
 function inv(){return '<div class="f" style="justify-content:space-between;align-items:center;margin-bottom:14px"><h2 style="margin:0">Inventory</h2><button class="b" onclick="openAdd()">+ Add product</button></div><div class="card sc"><table><caption class="sr">Products</caption><tr><th scope="col">Product</th><th scope="col">Original price</th><th scope="col">Selling price</th><th scope="col">Profit / unit</th><th scope="col">Stock</th><th scope="col"><span class="sr">Edit</span></th></tr>'+
 (S.products.length?S.products.map(p=>'<tr><td><button class="lk" onclick="openEdit('+p.id+')" aria-label="Edit '+esc(pn(p))+'">'+esc(p.name)+'</button>'+(p.size?'<br><small class="mut">'+esc(p.size)+'</small>':'')+'</td><td>'+P(p.cost)+'</td><td>'+P(p.price)+'</td><td class="'+(p.price>p.cost?'good':'bad')+'">'+P(p.price-p.cost)+'</td><td class="'+(p.stock==0?'bad':p.stock<=5?'warn':'')+'"><b>'+p.stock+'</b>'+(p.stock==0?' <small>(out)</small>':p.stock<=5?' <small>(low)</small>':'')+'</td><td><button class="b o" onclick="openEdit('+p.id+')">Edit</button></td></tr>').join(''):'<tr><td colspan="6" class="mut">No products yet. Click + Add product.</td></tr>')+
@@ -297,9 +327,8 @@ if(a.length<6)return toast('New password must be at least 6 characters.');if(a!=
 if(!await run(db.auth.signInWithPassword({email:user.email,password:o})))return;
 if(await run(db.auth.updateUser({password:a}))){toast('Password changed.');draw()}}
 
-function draw(){if(!user){loginView();return}document.getElementById('nav').style.display='';document.getElementById('main').className='';const T=[['dash','Dashboard'],['inv','Inventory'],['rs','Restock'],['ord','Sales'],['cash','Cash & withdrawals'],['set','Settings']];
-document.getElementById('nav').innerHTML='<h1>Tindahan</h1>'+T.map(t=>'<button '+(tab==t[0]?'class="on" aria-current="page"':'')+' onclick="go(\''+t[0]+'\')">'+esc(t[1])+'</button>').join('');
-document.getElementById('nav').insertAdjacentHTML('beforeend','<button onclick="signOut()" style="margin-top:auto">Sign out<br><small>'+esc(uname(user.email))+'</small></button>');
+function draw(){if(!user){loginView();return}document.getElementById('nav').style.display='';document.getElementById('main').className='';const T=[['dash','Dashboard','Home','home'],['inv','Inventory','Stock','box'],['rs','Restock','Restock','refresh'],['ord','Sales','Sales','cart'],['cash','Cash & Withdrawals','Cash','wallet'],['set','Settings','Settings','gear']];
+document.getElementById('nav').innerHTML='<h1>'+ic('cart')+'<span>Tindahan<small>POS &amp; Inventory</small></span></h1>'+T.map(t=>'<button '+(tab==t[0]?'class="on" aria-current="page"':'')+' aria-label="'+esc(t[1])+'" onclick="go(\''+t[0]+'\')">'+ic(t[3])+'<span class="d">'+esc(t[1])+'</span><span class="m">'+t[2]+'</span></button>').join('')+'<button class="so" aria-label="Sign out" onclick="signOut()" style="margin-top:auto">'+ic('out')+'<span class="d">Sign Out</span><span class="m">Exit</span></button><div class="em">'+esc(uname(user.email))+'</div>';
 document.getElementById('main').innerHTML=({dash,inv,rs:rsv,ord,cash:cashv,set:setv})[tab]()+foot();if(tab=='cash'&&wd)preview();if(tab=='rs'&&rsel)rtot()}
 let why='';
 if(!window.APP_CONFIG)why='config.js was not found. Keep it in the same folder as index.html.';
