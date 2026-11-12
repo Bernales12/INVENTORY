@@ -23,7 +23,7 @@
 define('DB_HOST', 'aws-0-ap-southeast-2.pooler.supabase.com');
 define('DB_PORT', '5432');
 define('DB_NAME', 'postgres');
-define('DB_USER', 'postgres.qejpamcqqemisvvkgiqs');
+define('DB_USER', 'postgres.qejpamcqqemisvvkgiq');
 define('DB_PASS', 'Bernales@#2005!');
 
 // App settings (unchanged from the original)
