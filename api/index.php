@@ -1,63 +1,84 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self' https://*.supabase.co wss://*.supabase.co; object-src 'none'; base-uri 'self'; form-action 'self'">
+<meta name="referrer" content="no-referrer">
+<meta name="robots" content="noindex,nofollow">
+<meta name="description" content="Private inventory, profit and delivery tracker.">
 <title>Tindahan Inventory</title>
 <style>
-:root{--bg:#cfe3ec;--side:#2a5468;--card:#f6fafc;--ink:#173a4d;--mut:#5d7f90;--line:#c5d9e2;--acc:#4f7a90;--good:#2f8f6b;--bad:#c2603a;--warn:#b57a10;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media(prefers-color-scheme:dark){:root{--bg:#10222b;--side:#0b181e;--card:#183241;--ink:#e3f0f5;--mut:#92b3c2;--line:#2a4a5a;--acc:#7fb0c8;--good:#5fd0a5;--bad:#f09068;--warn:#e8b64c}}
+:root{--bg:#cfe3ec;--side:#2a5468;--card:#f6fafc;--ink:#173a4d;--mut:#44636f;--line:#b4cbd6;--acc:#3f6a80;--good:#1f7556;--bad:#a8481f;--warn:#8f5f00;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root{--bg:#10222b;--side:#0b181e;--card:#183241;--ink:#e3f0f5;--mut:#9fbdca;--line:#2a4a5a;--acc:#8cbad1;--good:#5fd0a5;--bad:#f09068;--warn:#e8b64c}}
 *{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Nunito",system-ui,sans-serif}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:8px;top:-60px;background:var(--card);color:var(--ink);padding:10px 14px;border-radius:8px;z-index:20;font-weight:700}.skip:focus{top:8px}
 .app{display:flex;min-height:100vh}
 nav{width:200px;background:var(--side);color:#e3f0f5;padding:22px 12px;display:flex;flex-direction:column;gap:4px;flex:none}
 nav h1{font-size:17px;margin:0 8px 18px}
-nav button{all:unset;cursor:pointer;padding:10px 14px;border-radius:10px 0 0 10px;color:#b9d3df}
-nav button.on{background:var(--card);color:var(--ink);font-weight:700}
-nav button:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
-main{flex:1;padding:18px;min-width:0}
+nav button{all:unset;cursor:pointer;padding:10px 14px;border-radius:10px 0 0 10px;color:#d3e6ef}
+nav button.on{background:var(--card);color:#173a4d;font-weight:700}
+nav button:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.foot button:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+nav button:focus-visible{outline-color:#fff}
+main{flex:1;padding:18px;min-width:0}main:focus{outline:none}
 h2{margin:0 0 14px;font-size:22px}h3{margin:0 0 10px;font-size:16px}
 .grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-bottom:14px}
-.grid.w{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.grid.w{grid-template-columns:repeat(auto-fit,minmax(min(320px,100%),1fr))}
 .card{background:var(--card);border-radius:12px;padding:16px;min-width:0}
 .k{border:1px solid var(--line)}.k b{display:block;font-size:26px;line-height:1.2}.k span{color:var(--mut);font-size:13px}
-.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}.mut{color:var(--mut)}
 table{width:100%;border-collapse:collapse}th{text-align:left;color:var(--mut);font-weight:600;font-size:13px}
 td,th{padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
 .sc{overflow-x:auto}
-input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 9px;min-width:0}
-td input{width:84px}td input.q{width:56px}
-.f{display:flex;flex-wrap:wrap;gap:8px;align-items:end}.f label{display:flex;flex-direction:column;font-size:12px;color:var(--mut);gap:3px}
-button.b{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:8px 13px;background:var(--side);color:#fff;font-weight:600}
+input,select{font:inherit;font-size:16px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 9px;min-width:0}
+td input{width:90px}td input.q{width:60px}
+.f{display:flex;flex-wrap:wrap;gap:8px;align-items:end}.f label{display:flex;flex-direction:column;font-size:13px;color:var(--mut);gap:3px}
+button.b{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:8px 13px;min-height:40px;background:var(--side);color:#fff;font-weight:600}
 button.b.o{background:transparent;color:var(--ink);border:1px solid var(--line)}
-.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700;background:var(--bg)}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700;background:var(--card);border:1px solid var(--line)}
 .p-Pending{color:var(--warn)}.p-Out{color:var(--acc)}.p-Delivered{color:var(--good)}.p-Cancelled{color:var(--mut)}
 .bar{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:13px}.bar i{display:block;height:10px;border-radius:5px;background:var(--acc)}.bar span:first-child{width:120px;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--side);color:#fff;padding:10px 16px;border-radius:10px;display:none;max-width:90vw;z-index:9}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--side);color:#fff;padding:10px 16px;border-radius:10px;display:none;max-width:90vw;z-index:30}
 .note{padding:10px 12px;border-radius:8px;background:var(--bg);font-size:14px;margin-top:10px}
-@media(max-width:720px){.app{flex-direction:column}nav{width:auto;flex-direction:row;overflow-x:auto;padding:10px;position:sticky;top:0}nav h1{display:none}nav button{border-radius:10px;white-space:nowrap}}
+.foot{margin:18px 0 0;font-size:13px;color:var(--mut);display:flex;flex-wrap:wrap;gap:2px 8px;justify-content:center}
+.foot button{all:unset;cursor:pointer;color:var(--acc);text-decoration:underline;padding:6px 4px}
+mark{background:#ffe58a;color:#3a2a00;padding:0 3px;border-radius:3px}
+dialog{width:min(680px,94vw);max-height:88vh;border:0;border-radius:14px;padding:0;background:var(--card);color:var(--ink)}
+dialog::backdrop{background:rgba(8,30,42,.6)}
+.dh{position:sticky;top:0;display:flex;justify-content:flex-end;padding:10px 14px;background:var(--card);border-bottom:1px solid var(--line)}
+#lgb{padding:6px 22px 24px;line-height:1.6;max-width:70ch}#lgb h3{margin:18px 0 4px}#lgb p{margin:0 0 8px}
+#cb{position:fixed;left:12px;right:12px;bottom:calc(12px + env(safe-area-inset-bottom,0px));max-width:560px;margin:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px;z-index:25;box-shadow:0 10px 30px rgba(8,30,42,.3)}
+#cb[hidden]{display:none}#cb p{margin:0 0 10px}#cb div{display:flex;gap:8px;flex-wrap:wrap}
+@media(max-width:720px){.app{flex-direction:column}nav{width:auto;flex-direction:row;overflow-x:auto;padding:10px;position:sticky;top:0;z-index:10}nav h1{display:none}nav button{border-radius:10px;white-space:nowrap}}
 main.lg{display:grid;place-items:center;min-height:100vh;padding:20px;background:linear-gradient(160deg,#1c4153,#3a6f88 58%,#7fb0c8)}
-.lc{width:100%;max-width:380px;padding:32px 28px 28px;border-radius:18px;text-align:center;box-shadow:0 24px 60px rgba(8,30,42,.35)}
+.lc{width:100%;max-width:380px;padding:32px 28px 22px;border-radius:18px;text-align:center;box-shadow:0 24px 60px rgba(8,30,42,.35)}
 .lb{width:56px;height:56px;border-radius:16px;background:var(--side);color:#e3f0f5;display:grid;place-items:center;margin:0 auto 14px}
 .lc h1{margin:0;font-size:27px;font-weight:800;letter-spacing:-.3px}
 .ls{margin:4px 0 24px;color:var(--mut);font-size:14px}
 .lf{display:flex;flex-direction:column;gap:14px;text-align:left}
 .lf label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:var(--mut)}
-.lf input{width:100%;padding:12px 13px;font-size:15px;border-radius:10px}
+.lf input{width:100%;padding:12px 13px;border-radius:10px}
 .pw{position:relative;display:block}.pw input{padding-right:66px}
-.pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--acc);cursor:pointer;font:inherit;font-size:13px;font-weight:700;padding:6px 9px}
+.pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--acc);cursor:pointer;font:inherit;font-size:13px;font-weight:700;padding:8px 9px}
 .lf .b{width:100%;padding:12px;font-size:15px;border-radius:10px;margin-top:4px}
-#am{min-height:20px;font-size:13px;text-align:center}
+#am{min-height:20px;font-size:13px;text-align:center}.cn{font-size:12px;color:var(--mut);text-align:center;margin:0}
 </style></head><body>
-<div class="app"><nav id="nav"></nav><main id="main"></main></div><div id="toast" role="status"></div>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
-<script>if(typeof supabase==='undefined')document.write('<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"><\/script>')</script>
+<a class="skip" href="#main">Skip to content</a>
+<div class="app"><nav id="nav" aria-label="Main"></nav><main id="main" tabindex="-1"></main></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<dialog id="lg" aria-labelledby="lgh"><div class="dh"><button class="b o" onclick="this.closest('dialog').close()">Close</button></div><div id="lgb"></div></dialog>
+<div id="cb" role="region" aria-label="Analytics choice" hidden><p>May we count anonymous visits to improve the app? Sign-in storage is always on because the app needs it. See the Cookie &amp; Storage Policy.</p><div><button class="b" onclick="setC('no')">Essential only</button><button class="b o" onclick="setC('yes')">Allow analytics</button></div></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="config.js"></script>
 <script>
-/* Backup config: used only if config.js is missing or not found next to this file. */
-window.APP_CONFIG=window.APP_CONFIG||{SUPABASE_URL:'https://fhcguxmehcuzkeqnnnnd.supabase.co',SUPABASE_ANON_KEY:'sb_publishable_FwOwTGVLHMks6nYAaOg13w_uwAnJfSj'};
+/* Edit here, or put the same object in config.js. Leave nothing invented: empty fields show a yellow [ILAGAY] marker in the legal pages. */
+window.APP_CONFIG=window.APP_CONFIG||{SUPABASE_URL:'https://fhcguxmehcuzkeqnnnnd.supabase.co',SUPABASE_ANON_KEY:'sb_publishable_FwOwTGVLHMks6nYAaOg13w_uwAnJfSj',
+ANALYTICS_SRC:'', /* optional https:// script of a privacy-friendly tool; also add its host to script-src/connect-src in the CSP meta above */
+BUSINESS:{name:'',owner:'',address:'',email:'',phone:'',dpo:'',refundDays:'',dtiReg:''}};
 </script>
 <script>
 const DAY=864e5,C=window.APP_CONFIG||{};let S={products:[],orders:[],ledger:[]},tab='dash',wd='',user=null,db=null;
-const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const P=n=>'₱'+Math.round(n).toLocaleString('en-PH');
 const pn=p=>p.name+(p.size?' '+p.size:'');const uname=e=>e.endsWith('@example.com')?e.slice(0,-12):e;
 const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
@@ -68,17 +89,49 @@ const taken=()=>sum(S.ledger.filter(e=>e.t==='withdraw'),e=>e.a);
 const safe=()=>Math.max(0,profit()-taken());
 const low=()=>S.products.filter(p=>p.stock<=5);
 const need=()=>sum(low(),p=>(10-p.stock)*p.cost);
-function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',3600)}
-function go(t){tab=t;wd='';draw()}
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',4500)}
+function go(t){tab=t;wd='';draw();document.getElementById('main').focus({preventScroll:true})}
 const num=id=>parseFloat(document.getElementById(id).value)||0;
 const val=id=>document.getElementById(id).value.trim();
 const run=async q=>{const{error}=await q;if(error){toast(error.message);return false}return true};
+
+/* ---- Consent + optional analytics (off by default; honors Global Privacy Control) ---- */
+const ck=()=>{try{return localStorage.getItem('tn_consent')}catch(e){return null}};
+const gpc=()=>!!navigator.globalPrivacyControl;
+function stats(){if(ck()!=='yes'||gpc()||window._an||!/^https:\/\//.test(C.ANALYTICS_SRC||''))return;window._an=1;const s=document.createElement('script');s.src=C.ANALYTICS_SRC;s.defer=true;s.referrerPolicy='no-referrer';document.head.appendChild(s)}
+function setC(v){try{localStorage.setItem('tn_consent',v)}catch(e){}document.getElementById('cb').hidden=true;stats();toast(v==='yes'?'Analytics allowed.':'Essential only.')}
+function consentUI(){document.getElementById('cb').hidden=false;document.querySelector('#cb button').focus()}
+
+/* ---- Legal pages: templates, not legal advice. Business facts come only from APP_CONFIG.BUSINESS. ---- */
+const LN={privacy:'Privacy Policy',terms:'Terms of Use',cookies:'Cookie & Storage Policy',refund:'Refund & Returns'};
+function BZ(){const b=C.BUSINESS||{},f=(k,l)=>b[k]?esc(b[k]):'<mark>[ILAGAY: '+l+']</mark>';return{n:f('name','business name'),o:f('owner','owner / operator'),a:f('address','business address'),e:f('email','contact email'),p:f('phone','phone'),d:f('dpo','data protection contact'),r:f('refundDays','number of days'),t:f('dtiReg','DTI/SEC/BIR registration, if any')}}
+function doc(k){const b=BZ(),h=x=>'<h3>'+x+'</h3>',up='<p class="mut">Last updated: 12 November 2026</p>',who='<p>Operated by '+b.n+' ('+b.o+'), '+b.a+'. Contact: '+b.e+', '+b.p+'. Registration: '+b.t+'.</p>';
+if(k==='privacy')return'<h2 id="lgh">Privacy Policy</h2>'+up+who+'<p>This notice explains how we handle personal data in Tindahan, following the Data Privacy Act of 2012 (RA 10173).</p>'+
+h('What we collect')+'<p>Your username or email and password (the password is stored only as a hash by our login provider, Supabase), and the business records you enter: products, prices, stock, orders and cash entries. We do not ask for customer names, addresses or payment card numbers. Please do not type them into any field. Servers also log technical data such as IP address and browser type.</p>'+
+h('Why we use it')+'<p>To let you sign in and to run your inventory, orders and cash records. We do not sell your data and do not use it for advertising.</p>'+
+h('Who handles it')+'<p>Supabase hosts the database and login on our behalf. Its servers may be outside the Philippines. We share data with others only when the law requires.</p>'+
+h('How long we keep it')+'<p>Until you ask us to delete your account or records, or for as long as the law requires.</p>'+
+h('Your rights')+'<p>You may ask to see, correct, block or delete your data, object to its processing, get a copy, and claim damages as provided by RA 10173. You may also complain to the National Privacy Commission (privacy.gov.ph). Contact: '+b.d+'.</p>';
+if(k==='terms')return'<h2 id="lgh">Terms of Use</h2>'+up+who+
+h('Using the app')+'<p>Tindahan is for recording your own shop inventory, orders and cash. Keep your password private; you are responsible for activity under your account. Do not use the app for anything unlawful or try to access other people’s data.</p>'+
+h('Your records')+'<p>You own the records you enter. Figures such as profit and “safe to take” are calculated from what you enter. They are a tracking aid, not accounting, tax or legal advice.</p>'+
+h('Availability')+'<p>We aim to keep the app running but do not promise it will always be available or error-free. Please keep your own backup of important records.</p>'+
+h('Changes and law')+'<p>We may update these terms and will change the date above. These terms are governed by the laws of the Republic of the Philippines.</p>';
+if(k==='cookies')return'<h2 id="lgh">Cookie &amp; Storage Policy</h2>'+up+
+'<p>The app sets no cookies. It uses your browser’s local storage for two things: your sign-in session (needed so you stay logged in) and your choice about analytics. Both are essential to how the app works.</p>'+
+'<p>Analytics are off unless you allow them. If no analytics tool is set up, none runs. If your browser sends a Global Privacy Control signal, we treat it as “essential only”.</p>'+
+'<p>You can sign out or clear this site’s data in your browser at any time.'+(C.ANALYTICS_SRC?' <button class="b o" onclick="document.getElementById(\'lg\').close();consentUI()">Change analytics choice</button>':'')+'</p>';
+return'<h2 id="lgh">Refund &amp; Returns Policy</h2>'+up+who+'<p>This applies to purchases made from '+b.n+' by our customers. Nothing here limits your rights under Philippine consumer law, including the Consumer Act and the Internet Transactions Act.</p>'+
+h('When you can ask for a refund, replacement or repair')+'<p>If an item arrives wrong, damaged, defective or not as described.</p>'+
+h('How')+'<p>Contact us at '+b.e+' within '+b.r+' days of delivery with your order details and a photo. We will tell you the remedy and refund eligible amounts through the same payment method.</p>'+
+h('Complaints')+'<p>If we cannot resolve your concern, you may bring it to the DTI.</p>';}
+function legal(k){document.getElementById('lgb').innerHTML=doc(k);const d=document.getElementById('lg');d.showModal();d.scrollTop=0;if(/ILAGAY/.test(d.innerHTML))console.warn('Tindahan: fill in APP_CONFIG.BUSINESS before publishing the legal pages.')}
+const foot=()=>'<p class="foot">'+Object.keys(LN).map(k=>'<button onclick="legal(\''+k+'\')">'+LN[k]+'</button>').join('')+(C.ANALYTICS_SRC?'<button onclick="consentUI()">Analytics choice</button>':'')+'</p>';
 
 async function load(){const[a,b,c]=await Promise.all([db.from('products').select('*').order('id'),db.from('orders').select('*').order('id'),db.from('ledger').select('*').order('id')]);
 const err=a.error||b.error||c.error;if(err)return toast(err.message);S={products:a.data,orders:b.data,ledger:c.data};draw()}
 
 let mode='in',busy=false;
-function setMode(m){mode=m;loginView()}
 async function authGo(){if(busy)return;let em=mode==='reset'?'':val('em').toLowerCase();if(em&&!em.includes('@'))em+='@example.com';const pwe=document.getElementById('pw'),pw=pwe?pwe.value:'';
 const msg=t=>{document.getElementById('am').innerHTML=t},bad=t=>msg('<span class="bad">'+esc(t)+'</span>'),ok=t=>msg('<span class="good">'+esc(t)+'</span>');
 if(mode!=='reset'&&!/^\S+@\S+\.\S+$/.test(em))return bad('Enter your username.');
@@ -95,19 +148,19 @@ if(mode==='forgot')ok('Reset link sent. Check your email.');
 else if(mode==='reset')mode='in';
 }
 async function signOut(){await db.auth.signOut();S={products:[],orders:[],ledger:[]}}
-function tp(){const e=document.getElementById('pw'),b=e.nextElementSibling,h=e.type==='password';e.type=h?'text':'password';b.textContent=h?'Hide':'Show'}
+function tp(){const e=document.getElementById('pw'),b=e.nextElementSibling,h=e.type==='password';e.type=h?'text':'password';b.textContent=h?'Hide':'Show';b.setAttribute('aria-pressed',h)}
 function loginView(){const m=document.getElementById('main');document.getElementById('nav').style.display='none';m.className='lg';
 const rs=mode==='reset',T=rs?'Save new password':'Sign in';
 const uf=rs?'':'<label>Username<input id="em" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Enter username"></label>';
-const pf='<label>'+(rs?'New password':'Password')+'<span class="pw"><input id="pw" type="password" autocomplete="'+(rs?'new-password':'current-password')+'" placeholder="Enter password"><button type="button" onclick="tp()">Show</button></span></label>';
+const pf='<label>'+(rs?'New password':'Password')+'<span class="pw"><input id="pw" type="password" autocomplete="'+(rs?'new-password':'current-password')+'" placeholder="Enter password"><button type="button" aria-label="Show or hide password" aria-pressed="false" onclick="tp()">Show</button></span></label>';
 m.innerHTML='<div class="card lc" onkeydown="if(event.key===\'Enter\')authGo()"><div class="lb"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div><h1>Tindahan</h1><p class="ls">Inventory, profit and delivery</p>'+
-(!db?'<p class="bad">Supabase is not connected. '+esc(why)+'</p>':'<div class="lf">'+uf+pf+'<button class="b" onclick="authGo()">'+T+'</button><div id="am" role="status" aria-live="polite"></div></div>')+'</div>'}
+(!db?'<p class="bad">Supabase is not connected. '+esc(why)+'</p>':'<div class="lf">'+uf+pf+'<button class="b" onclick="authGo()">'+T+'</button><div id="am" role="status" aria-live="polite"></div><p class="cn">By signing in you agree to the <button class="lk" style="all:unset;cursor:pointer;color:var(--acc);text-decoration:underline" onclick="legal(\'terms\')">Terms</button> and have read the <button class="lk" style="all:unset;cursor:pointer;color:var(--acc);text-decoration:underline" onclick="legal(\'privacy\')">Privacy Policy</button>.</p></div>')+foot()+'</div>'}
 
 async function addProduct(){const name=val('pn'),size=val('pz'),cost=num('pc'),price=num('pp'),stock=Math.floor(num('ps'));
 if(!name||cost<=0||price<=0)return toast('Fill in the name, original price and selling price.');
 if(await run(db.from('products').insert({name,size,cost,price,stock})))load()}
 async function setP(id,f,v){if(await run(db.from('products').update({[f]:Math.max(0,parseFloat(v)||0)}).eq('id',id)))load()}
-async function delP(id){if(await run(db.from('products').delete().eq('id',id)))load()}
+async function delP(id){const p=S.products.find(x=>x.id==id);if(!confirm('Delete '+(p?pn(p):'this product')+'? This cannot be undone.'))return;if(await run(db.from('products').delete().eq('id',id)))load()}
 async function restock(id){const p=S.products.find(x=>x.id==id),q=Math.floor(parseFloat(document.getElementById('r'+id).value)||0);
 if(q<=0)return toast('Enter how many to buy.');const c=q*p.cost;
 if(c>cash())return toast('Kulang ang pondo: need '+P(c)+', you have '+P(cash())+' (short by '+P(c-cash())+').');
@@ -131,7 +184,7 @@ async function capital(){const a=num('ca');if(a<=0)return toast('Enter an amount
 function chart(){const m=[];const n=new Date();for(let i=5;i>=0;i--){const d=new Date(n.getFullYear(),n.getMonth()-i,1);m.push({k:d.getFullYear()+'-'+d.getMonth(),l:d.toLocaleString('en',{month:'short'}),v:0})}
 dels().forEach(o=>{const d=new Date(o.d),x=m.find(y=>y.k==d.getFullYear()+'-'+d.getMonth());if(x)x.v+=(o.price-o.cost)*o.qty});
 const mx=Math.max(1,...m.map(x=>x.v));
-return '<svg viewBox="0 0 360 170" width="100%" role="img" aria-label="Profit per month">'+m.map((x,i)=>{const h=x.v/mx*110,X=14+i*57;return '<rect x="'+X+'" y="'+(130-h)+'" width="40" height="'+h+'" rx="5" fill="var(--acc)"/><text x="'+(X+20)+'" y="'+(124-h)+'" text-anchor="middle" font-size="10" fill="var(--ink)">'+(x.v?P(x.v):'')+'</text><text x="'+(X+20)+'" y="150" text-anchor="middle" font-size="11" fill="var(--mut)">'+x.l+'</text>'}).join('')+'</svg>'}
+return '<svg viewBox="0 0 360 170" width="100%" role="img" aria-label="Profit per month: '+m.map(x=>x.l+' '+P(x.v)).join(', ')+'">'+m.map((x,i)=>{const h=x.v/mx*110,X=14+i*57;return '<rect x="'+X+'" y="'+(130-h)+'" width="40" height="'+h+'" rx="5" fill="var(--acc)"/><text x="'+(X+20)+'" y="'+(124-h)+'" text-anchor="middle" font-size="10" fill="var(--ink)">'+(x.v?P(x.v):'')+'</text><text x="'+(X+20)+'" y="150" text-anchor="middle" font-size="11" fill="var(--mut)">'+x.l+'</text>'}).join('')+'</svg>'}
 
 function dash(){const L=low(),short=Math.max(0,need()-cash()),st=S.orders.filter(o=>o.st==='Pending'||o.st==='Out');
 const top={};dels().forEach(o=>top[o.name]=(top[o.name]||0)+(o.price-o.cost)*o.qty);const t=Object.entries(top).sort((a,b)=>b[1]-a[1]).slice(0,6),mx=t[0]?t[0][1]:1;
@@ -139,24 +192,24 @@ return '<h2>Welcome back!</h2><div class="grid">'+
 [[S.products.length,'Products'],[sum(S.products,p=>p.stock),'Units in stock'],[P(cash()),'Cash on hand'],['<span class="good">'+P(profit())+'</span>','Total profit'],[st.length,'Orders to deliver'],['<span class="'+(L.length?'bad':'')+'">'+S.products.filter(p=>p.stock==0).length+'</span>','Out of stock']].map(x=>'<div class="card k"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join('')+'</div>'+
 '<div class="grid w"><div class="card"><h3>Profit vs. restock money</h3><p style="margin:0 0 6px">Profit you can take: <b class="good">'+P(safe())+'</b><br>Already taken: <b>'+P(taken())+'</b></p>'+
 (L.length?'<div class="note">'+L.length+' item(s) low or out. Restocking to 10 each costs <b>'+P(need())+'</b>. '+(short?'<span class="bad">Cash is short by '+P(short)+'.</span>':'<span class="good">You have enough cash.</span>')+'</div>':'<div class="note good">Stock levels look fine.</div>')+
-'</div><div class="card"><h3>Profit per month</h3>'+chart()+'</div><div class="card"><h3>Top products by profit</h3>'+(t.length?t.map(([n,v])=>'<div class="bar"><span>'+esc(n)+'</span><i style="width:'+Math.max(6,v/mx*100)+'px"></i><span>'+P(v)+'</span></div>').join(''):'<p>No delivered orders yet.</p>')+'</div></div>'}
+'</div><div class="card"><h3>Profit per month</h3>'+chart()+'</div><div class="card"><h3>Top products by profit</h3>'+(t.length?t.map(([n,v])=>'<div class="bar"><span>'+esc(n)+'</span><i style="width:'+Math.max(6,v/mx*100)+'px"></i><span>'+P(v)+'</span></div>').join(''):'<p>No delivered orders yet. Mark an order as delivered to see profit here.</p>')+'</div></div>'}
 
 function inv(){return '<h2>Inventory</h2><div class="card" style="margin-bottom:14px"><h3>Add product</h3><div class="f"><label>Name<input id="pn"></label><label>Size (e.g. 100 ml)<input id="pz" placeholder="100 ml"></label><label>Original price (puhunan)<input id="pc" type="number" min="0"></label><label>Selling price<input id="pp" type="number" min="0"></label><label>Stock<input id="ps" type="number" min="0" value="0"></label><button class="b" onclick="addProduct()">Add product</button></div></div>'+
-'<div class="card sc"><table><tr><th>Product</th><th>Original price</th><th>Selling price</th><th>Profit / unit</th><th>Stock</th><th>Buy more</th><th></th></tr>'+
-S.products.map(p=>'<tr><td>'+esc(p.name)+(p.size?'<br><small style="color:var(--mut)">'+esc(p.size)+'</small>':'')+'</td><td><input type="number" value="'+p.cost+'" onchange="setP('+p.id+',\'cost\',this.value)" aria-label="Original price"></td><td><input type="number" value="'+p.price+'" onchange="setP('+p.id+',\'price\',this.value)" aria-label="Selling price"></td><td class="'+(p.price>p.cost?'good':'bad')+'">'+P(p.price-p.cost)+'</td><td class="'+(p.stock==0?'bad':p.stock<=5?'warn':'')+'"><b>'+p.stock+'</b></td><td><input class="q" id="r'+p.id+'" type="number" min="1" value="10" aria-label="Quantity to buy"> <button class="b o" onclick="restock('+p.id+')">Restock</button></td><td><button class="b o" onclick="delP('+p.id+')" aria-label="Delete">✕</button></td></tr>').join('')+'</table></div><p style="color:var(--mut);font-size:13px">Restock takes the cost out of your cash on hand ('+P(cash())+').</p>'}
+'<div class="card sc"><table><caption class="sr">Products</caption><tr><th scope="col">Product</th><th scope="col">Original price</th><th scope="col">Selling price</th><th scope="col">Profit / unit</th><th scope="col">Stock</th><th scope="col">Buy more</th><th scope="col"><span class="sr">Delete</span></th></tr>'+
+S.products.map(p=>'<tr><td>'+esc(p.name)+(p.size?'<br><small class="mut">'+esc(p.size)+'</small>':'')+'</td><td><input type="number" value="'+p.cost+'" onchange="setP('+p.id+',\'cost\',this.value)" aria-label="Original price of '+esc(pn(p))+'"></td><td><input type="number" value="'+p.price+'" onchange="setP('+p.id+',\'price\',this.value)" aria-label="Selling price of '+esc(pn(p))+'"></td><td class="'+(p.price>p.cost?'good':'bad')+'">'+P(p.price-p.cost)+'</td><td class="'+(p.stock==0?'bad':p.stock<=5?'warn':'')+'"><b>'+p.stock+'</b>'+(p.stock==0?' <small>(out)</small>':p.stock<=5?' <small>(low)</small>':'')+'</td><td><input class="q" id="r'+p.id+'" type="number" min="1" value="10" aria-label="Quantity to buy of '+esc(pn(p))+'"> <button class="b o" onclick="restock('+p.id+')">Restock</button></td><td><button class="b o" onclick="delP('+p.id+')" aria-label="Delete '+esc(pn(p))+'">✕</button></td></tr>').join('')+'</table></div><p class="mut" style="font-size:13px">Restock takes the cost out of your cash on hand ('+P(cash())+').</p>'}
 
 function ord(){const lab={Pending:'Pending',Out:'Out for delivery',Delivered:'Delivered',Cancelled:'Cancelled'},nx={Pending:'Send out',Out:'Mark delivered'};
-return '<h2>Orders & delivery</h2><div class="card" style="margin-bottom:14px"><h3>New order</h3><div class="f"><label>Product<select id="op">'+S.products.filter(p=>p.stock>0).map(p=>'<option value="'+p.id+'">'+esc(pn(p))+' ('+p.stock+' left)</option>').join('')+'</select></label><label>Qty<input id="oq" type="number" min="1" value="1" style="width:70px"></label><button class="b" onclick="addOrder()">Create order</button></div></div>'+
-'<div class="card sc"><table><tr><th>Date</th><th>Order</th><th>Total</th><th>Profit</th><th>Status</th><th></th></tr>'+
-S.orders.slice().reverse().map(o=>'<tr><td>'+new Date(o.d).toLocaleDateString('en-PH',{month:'short',day:'numeric'})+'</td><td>'+o.qty+' × '+esc(o.name)+'</td><td>'+P(o.price*o.qty)+'</td><td class="good">'+P((o.price-o.cost)*o.qty)+'</td><td><span class="pill p-'+o.st+'">'+lab[o.st]+'</span></td><td>'+(nx[o.st]?'<button class="b" onclick="adv('+o.id+')">'+nx[o.st]+'</button> <button class="b o" onclick="cancel('+o.id+')">Cancel</button>':'')+'</td></tr>').join('')+'</table></div><p style="color:var(--mut);font-size:13px">Money from an order goes into your cash only after it is marked delivered.</p>'}
+return '<h2>Orders &amp; delivery</h2><div class="card" style="margin-bottom:14px"><h3>New order</h3><div class="f"><label>Product<select id="op">'+S.products.filter(p=>p.stock>0).map(p=>'<option value="'+p.id+'">'+esc(pn(p))+' ('+p.stock+' left)</option>').join('')+'</select></label><label>Qty<input id="oq" type="number" min="1" value="1" style="width:70px"></label><button class="b" onclick="addOrder()">Create order</button></div></div>'+
+'<div class="card sc"><table><caption class="sr">Orders</caption><tr><th scope="col">Date</th><th scope="col">Order</th><th scope="col">Total</th><th scope="col">Profit</th><th scope="col">Status</th><th scope="col"><span class="sr">Actions</span></th></tr>'+
+S.orders.slice().reverse().map(o=>'<tr><td>'+new Date(o.d).toLocaleDateString('en-PH',{month:'short',day:'numeric'})+'</td><td>'+o.qty+' × '+esc(o.name)+'</td><td>'+P(o.price*o.qty)+'</td><td class="good">'+P((o.price-o.cost)*o.qty)+'</td><td><span class="pill p-'+o.st+'">'+lab[o.st]+'</span></td><td>'+(nx[o.st]?'<button class="b" onclick="adv('+o.id+')">'+nx[o.st]+'</button> <button class="b o" onclick="cancel('+o.id+')">Cancel</button>':'')+'</td></tr>').join('')+'</table></div><p class="mut" style="font-size:13px">Money from an order goes into your cash only after it is marked delivered. Do not type customer names or addresses here.</p>'}
 
 function cashv(){const L=S.ledger.slice().reverse();
-return '<h2>Cash & withdrawals</h2><div class="grid"><div class="card k"><b>'+P(cash())+'</b><span>Cash on hand</span></div><div class="card k"><b class="good">'+P(safe())+'</b><span>Profit you can take</span></div><div class="card k"><b>'+P(taken())+'</b><span>Taken so far</span></div><div class="card k"><b class="'+(need()>cash()?'bad':'')+'">'+P(need())+'</b><span>Needed to restock low items</span></div></div>'+
+return '<h2>Cash &amp; withdrawals</h2><div class="grid"><div class="card k"><b>'+P(cash())+'</b><span>Cash on hand</span></div><div class="card k"><b class="good">'+P(safe())+'</b><span>Profit you can take</span></div><div class="card k"><b>'+P(taken())+'</b><span>Taken so far</span></div><div class="card k"><b class="'+(need()>cash()?'bad':'')+'">'+P(need())+'</b><span>Needed to restock low items</span></div></div>'+
 '<div class="grid w"><div class="card"><h3>Take money</h3><div class="f"><label>Amount<input id="wa" type="number" min="0" value="'+wd+'" oninput="preview()"></label><label>For<input id="wt" placeholder="Personal use"></label><button class="b" onclick="withdraw()">Take money</button></div><div id="wn" class="note" aria-live="polite"></div></div>'+
 '<div class="card"><h3>Add capital</h3><div class="f"><label>Amount<input id="ca" type="number" min="0"></label><button class="b" onclick="capital()">Add</button></div></div></div>'+
-'<div class="card sc"><h3>History</h3><table><tr><th>Date</th><th>Type</th><th>Details</th><th>Amount</th></tr>'+L.map(e=>{const inn=e.t==='sale'||e.t==='capital';return '<tr><td>'+new Date(e.d).toLocaleDateString('en-PH',{month:'short',day:'numeric'})+'</td><td>'+({sale:'Sale',capital:'Capital',restock:'Restock',withdraw:'Withdrawal'})[e.t]+'</td><td>'+esc(e.note)+'</td><td class="'+(inn?'good':'bad')+'">'+(inn?'+':'−')+P(e.a)+'</td></tr>'}).join('')+'</table></div>'}
+'<div class="card sc"><h3>History</h3><table><caption class="sr">Cash history</caption><tr><th scope="col">Date</th><th scope="col">Type</th><th scope="col">Details</th><th scope="col">Amount</th></tr>'+L.map(e=>{const inn=e.t==='sale'||e.t==='capital';return '<tr><td>'+new Date(e.d).toLocaleDateString('en-PH',{month:'short',day:'numeric'})+'</td><td>'+({sale:'Sale',capital:'Capital',restock:'Restock',withdraw:'Withdrawal'})[e.t]+'</td><td>'+esc(e.note)+'</td><td class="'+(inn?'good':'bad')+'">'+(inn?'+':'−')+P(e.a)+'</td></tr>'}).join('')+'</table></div>'}
 
-function setv(){return '<h2>Account settings</h2><p style="margin-top:-6px">Current username: <b>'+esc(uname(user.email))+'</b></p><div class="grid w"><div class="card"><h3>Change username</h3><div class="f"><label>New username<input id="nu" autocomplete="off"></label><label>Current password<input id="cu_pw" type="password" autocomplete="current-password"></label><button class="b" onclick="chgUser()">Save username</button></div></div><div class="card"><h3>Change password</h3><div class="f"><label>Current password<input id="cp_old" type="password" autocomplete="current-password"></label><label>New password<input id="cp_new" type="password" autocomplete="new-password"></label><label>Confirm new password<input id="cp_new2" type="password" autocomplete="new-password"></label><button class="b" onclick="chgPass()">Save password</button></div></div></div>'}
+function setv(){return '<h2>Account settings</h2><p style="margin-top:-6px">Current username: <b>'+esc(uname(user.email))+'</b></p><div class="grid w"><div class="card"><h3>Change username</h3><div class="f"><label>New username<input id="nu" autocomplete="off"></label><label>Current password<input id="cu_pw" type="password" autocomplete="current-password"></label><button class="b" onclick="chgUser()">Save username</button></div></div><div class="card"><h3>Change password</h3><div class="f"><label>Current password<input id="cp_old" type="password" autocomplete="current-password"></label><label>New password<input id="cp_new" type="password" autocomplete="new-password"></label><label>Confirm new password<input id="cp_new2" type="password" autocomplete="new-password"></label><button class="b" onclick="chgPass()">Save password</button></div></div></div><p class="mut" style="font-size:13px">To access, correct or delete your data, see the Privacy Policy below.</p>'}
 async function chgUser(){let n=val('nu').toLowerCase();const pw=document.getElementById('cu_pw').value;
 if(!n)return toast('Enter a new username.');if(!n.includes('@'))n+='@example.com';
 if(!/^\S+@\S+\.\S+$/.test(n))return toast('That username is not valid.');
@@ -170,13 +223,14 @@ if(!await run(db.auth.signInWithPassword({email:user.email,password:o})))return;
 if(await run(db.auth.updateUser({password:a}))){toast('Password changed.');draw()}}
 
 function draw(){if(!user){loginView();return}document.getElementById('nav').style.display='';document.getElementById('main').className='';const T=[['dash','Dashboard'],['inv','Inventory'],['ord','Orders & delivery'],['cash','Cash & withdrawals'],['set','Settings']];
-document.getElementById('nav').innerHTML='<h1>Tindahan</h1>'+T.map(t=>'<button class="'+(tab==t[0]?'on':'')+'" onclick="go(\''+t[0]+'\')">'+t[1]+'</button>').join('');
+document.getElementById('nav').innerHTML='<h1>Tindahan</h1>'+T.map(t=>'<button '+(tab==t[0]?'class="on" aria-current="page"':'')+' onclick="go(\''+t[0]+'\')">'+esc(t[1])+'</button>').join('');
 document.getElementById('nav').insertAdjacentHTML('beforeend','<button onclick="signOut()" style="margin-top:auto">Sign out<br><small>'+esc(uname(user.email))+'</small></button>');
-document.getElementById('main').innerHTML=({dash,inv,ord,cash:cashv,set:setv})[tab]();if(tab=='cash'&&wd)preview()}
+document.getElementById('main').innerHTML=({dash,inv,ord,cash:cashv,set:setv})[tab]()+foot();if(tab=='cash'&&wd)preview()}
 let why='';
 if(!window.APP_CONFIG)why='config.js was not found. Keep it in the same folder as index.html.';
 else if(!C.SUPABASE_URL||!C.SUPABASE_ANON_KEY||C.SUPABASE_URL.includes('YOUR-PROJECT')||C.SUPABASE_ANON_KEY.includes('YOUR-ANON'))why='config.js still has the placeholder values.';
 else if(typeof supabase==='undefined')why='The Supabase library did not load. Check your internet connection or ad-blocker.';
 else try{db=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY)}catch(e){why=e.message}
+stats();if(C.ANALYTICS_SRC&&ck()===null&&!gpc())document.getElementById('cb').hidden=false;
 if(db){db.auth.onAuthStateChange((ev,s)=>{if(ev==='PASSWORD_RECOVERY'){mode='reset';user=null;loginView();return}user=s?s.user:null;if(user)load();else{mode='in';draw()}})}else draw();
 </script></body></html>
