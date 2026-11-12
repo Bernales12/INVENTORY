@@ -37,7 +37,12 @@ button.b.o{background:transparent;color:var(--ink);border:1px solid var(--line)}
 </style></head><body>
 <div class="app"><nav id="nav"></nav><main id="main"></main></div><div id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>if(typeof supabase==='undefined')document.write('<script src="https://unpkg.com/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"><\/script>')</script>
 <script src="config.js"></script>
+<script>
+/* Backup config: used only if config.js is missing or not found next to this file. */
+window.APP_CONFIG=window.APP_CONFIG||{SUPABASE_URL:'https://qejpamcqqemisvvkgiqs.supabase.co',SUPABASE_ANON_KEY:'sb_publishable_lm5YQ4cXV9A2sDvUNFdHyg_t_wkfvrK'};
+</script>
 <script>
 const DAY=864e5,C=window.APP_CONFIG||{};let S={products:[],orders:[],ledger:[]},tab='dash',wd='',user=null,db=null;
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
@@ -148,7 +153,7 @@ document.getElementById('nav').insertAdjacentHTML('beforeend','<button onclick="
 document.getElementById('main').innerHTML=({dash,inv,ord,cash:cashv})[tab]();if(tab=='cash'&&wd)preview()}
 let why='';
 if(!window.APP_CONFIG)why='config.js was not found. Keep it in the same folder as index.html.';
-else if(!C.SUPABASE_URL||!C.SUPABASE_ANON_KEY||C.SUPABASE_URL.includes('https://qejpamcqqemisvvkgiqs.supabase.co')||C.SUPABASE_ANON_KEY.includes('sb_publishable_lm5YQ4cXV9A2sDvUNFdHyg_t_wkfvrK'))why='config.js still has the placeholder values.';
+else if(!C.SUPABASE_URL||!C.SUPABASE_ANON_KEY||C.SUPABASE_URL.includes('YOUR-PROJECT')||C.SUPABASE_ANON_KEY.includes('YOUR-ANON'))why='config.js still has the placeholder values.';
 else if(typeof supabase==='undefined')why='The Supabase library did not load. Check your internet connection or ad-blocker.';
 else try{db=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY)}catch(e){why=e.message}
 if(db){db.auth.onAuthStateChange((ev,s)=>{if(ev==='PASSWORD_RECOVERY'){mode='reset';user=null;loginView();return}user=s?s.user:null;if(user)load();else{mode='in';draw()}})}else draw();
