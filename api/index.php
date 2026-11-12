@@ -4,7 +4,7 @@
 <title>Mini Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="config.js"></script>
+<script src="Config.js"></script>
 <style>
 :root{--pine:#12372a;--bone:#fafbf8;--mist:#eaf0eb;--ink:#17211c;--mute:#5d6b63;--amber:#b7791f;--red:#b3261e;--ok:#2d7a4f;--line:#d5ded7}
 *{box-sizing:border-box}
