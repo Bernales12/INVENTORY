@@ -1,156 +1,151 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Mini Store</title>
-<link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
-<script src="Config.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Tindahan Inventory</title>
 <style>
-:root{--pine:#12372a;--bone:#fafbf8;--mist:#eaf0eb;--ink:#17211c;--mute:#5d6b63;--amber:#b7791f;--red:#b3261e;--ok:#2d7a4f;--line:#d5ded7}
-*{box-sizing:border-box}
-body{margin:0;font:15px/1.5 "Public Sans",system-ui,sans-serif;color:var(--ink);background:var(--bone)}
-[hidden]{display:none!important}
-#app{display:grid;grid-template-columns:200px 1fr;min-height:100vh}
-nav{background:var(--pine);color:#fff;padding:20px 12px;display:flex;flex-direction:column;gap:4px}
-nav h1{font-size:17px;margin:0 8px 16px}
-nav button{all:unset;cursor:pointer;display:block;padding:8px 12px;border-radius:6px;color:#cfe0d6}
-nav button:hover,nav button.on{background:#1f5240;color:#fff}
-nav button:focus-visible{outline:2px solid #fff}
-nav .out{margin-top:auto}
-main{padding:24px;max-width:1100px;width:100%}
-h2{margin:0 0 16px;font-size:22px}h3{font-size:16px;margin:24px 0 8px}
-.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin:12px 0}
-.kpi{background:var(--mist);border-radius:8px;padding:14px}.kpi b{display:block;font-size:26px}.kpi span,.mute{color:var(--mute)}
-table{width:100%;border-collapse:collapse;background:#fff;border:1px solid var(--line)}
-th,td{padding:8px 10px;text-align:left;border-bottom:1px solid var(--line)}th{background:var(--mist);font-weight:500}
-.r{text-align:right}.low{color:var(--red);font-weight:700}.soon{color:var(--amber);font-weight:700}.good{color:var(--ok);font-weight:700}
-form,.row{display:flex;flex-wrap:wrap;gap:8px;align-items:end;margin:8px 0}.grow{flex:1;min-width:180px}
-label{display:flex;flex-direction:column;font-size:13px;color:var(--mute);gap:2px}
-input,select,.b{font:inherit;padding:7px 9px;border:1px solid var(--line);border-radius:6px;background:#fff}
-input:focus,select:focus{outline:2px solid var(--pine);border-color:var(--pine)}
-.b{background:var(--pine);color:#fff;border-color:var(--pine);cursor:pointer}.b.alt{background:#fff;color:var(--pine)}.b:disabled{opacity:.4;cursor:default}
-.shop{display:grid;grid-template-columns:1fr 320px;gap:20px}
-.chips{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 12px}
-.chips button{all:unset;cursor:pointer;padding:4px 14px;border-radius:99px;background:#fff;border:1px solid var(--line)}
-.chips button.on{background:var(--pine);color:#fff;border-color:var(--pine)}
-.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
-.card{background:#fff;border:1px solid var(--line);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:3px}
-.av{width:40px;height:40px;border-radius:8px;background:var(--mist);color:var(--pine);display:grid;place-items:center;font-weight:700;font-size:18px;margin-bottom:4px}
-.price{font-size:18px;font-weight:700;color:var(--pine)}.card .b{margin-top:6px}
-aside{background:var(--mist);border-radius:8px;padding:14px;align-self:start;position:sticky;top:12px}
-aside form{flex-direction:column;align-items:stretch}aside h3:first-child{margin-top:0}
-.bar{height:6px;background:var(--mist);border-radius:3px;min-width:70px}.bar i{display:block;height:100%;border-radius:3px;background:var(--pine)}.bar i.l{background:var(--red)}
-details{margin:8px 0}summary{cursor:pointer;color:var(--pine);font-weight:500}
-#msg{position:fixed;right:16px;bottom:16px;max-width:320px;background:var(--ink);color:#fff;padding:10px 14px;border-radius:6px;display:none;z-index:9}#msg.err{background:var(--red)}
-#login,#setup{max-width:340px;margin:15vh auto;padding:20px;background:#fff;border:1px solid var(--line);border-radius:8px}
-#login form{flex-direction:column;align-items:stretch}
-@media(max-width:900px){.shop{grid-template-columns:1fr}aside{position:static}}
-@media(max-width:700px){#app{grid-template-columns:1fr}nav{flex-direction:row;flex-wrap:wrap;padding:12px}nav h1{width:100%;margin:0 4px 6px}nav .out{margin:0}main{padding:16px}table{display:block;overflow-x:auto}}
-@media print{nav,form,button,details{display:none!important}#app{display:block}}
+:root{--bg:#cfe3ec;--side:#2a5468;--card:#f6fafc;--ink:#173a4d;--mut:#5d7f90;--line:#c5d9e2;--acc:#4f7a90;--good:#2f8f6b;--bad:#c2603a;--warn:#b57a10;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root{--bg:#10222b;--side:#0b181e;--card:#183241;--ink:#e3f0f5;--mut:#92b3c2;--line:#2a4a5a;--acc:#7fb0c8;--good:#5fd0a5;--bad:#f09068;--warn:#e8b64c}}
+*{box-sizing:border-box}html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 "Nunito",system-ui,sans-serif}
+.app{display:flex;min-height:100vh}
+nav{width:200px;background:var(--side);color:#e3f0f5;padding:22px 12px;display:flex;flex-direction:column;gap:4px;flex:none}
+nav h1{font-size:17px;margin:0 8px 18px}
+nav button{all:unset;cursor:pointer;padding:10px 14px;border-radius:10px 0 0 10px;color:#b9d3df}
+nav button.on{background:var(--card);color:var(--ink);font-weight:700}
+nav button:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+main{flex:1;padding:18px;min-width:0}
+h2{margin:0 0 14px;font-size:22px}h3{margin:0 0 10px;font-size:16px}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));margin-bottom:14px}
+.grid.w{grid-template-columns:repeat(auto-fit,minmax(320px,1fr))}
+.card{background:var(--card);border-radius:12px;padding:16px;min-width:0}
+.k{border:1px solid var(--line)}.k b{display:block;font-size:26px;line-height:1.2}.k span{color:var(--mut);font-size:13px}
+.good{color:var(--good)}.bad{color:var(--bad)}.warn{color:var(--warn)}
+table{width:100%;border-collapse:collapse}th{text-align:left;color:var(--mut);font-weight:600;font-size:13px}
+td,th{padding:8px 6px;border-bottom:1px solid var(--line);vertical-align:middle}
+.sc{overflow-x:auto}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:7px 9px;min-width:0}
+td input{width:84px}td input.q{width:56px}
+.f{display:flex;flex-wrap:wrap;gap:8px;align-items:end}.f label{display:flex;flex-direction:column;font-size:12px;color:var(--mut);gap:3px}
+button.b{font:inherit;cursor:pointer;border:0;border-radius:8px;padding:8px 13px;background:var(--side);color:#fff;font-weight:600}
+button.b.o{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.pill{display:inline-block;padding:2px 9px;border-radius:99px;font-size:12px;font-weight:700;background:var(--bg)}
+.p-Pending{color:var(--warn)}.p-Out{color:var(--acc)}.p-Delivered{color:var(--good)}.p-Cancelled{color:var(--mut)}
+.bar{display:flex;align-items:center;gap:8px;margin:7px 0;font-size:13px}.bar i{display:block;height:10px;border-radius:5px;background:var(--acc)}.bar span:first-child{width:120px;flex:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--side);color:#fff;padding:10px 16px;border-radius:10px;display:none;max-width:90vw;z-index:9}
+.note{padding:10px 12px;border-radius:8px;background:var(--bg);font-size:14px;margin-top:10px}
+@media(max-width:720px){.app{flex-direction:column}nav{width:auto;flex-direction:row;overflow-x:auto;padding:10px;position:sticky;top:0}nav h1{display:none}nav button{border-radius:10px;white-space:nowrap}}
 </style></head><body>
-<div id="setup" hidden><h2>Not connected</h2><p class="mute" id="why"></p></div>
-<div id="login" hidden><h2>Staff sign in</h2><form id="lf"><label>Email<input name="e" type="email" required></label><label>Password<input name="p" type="password" required></label><button class="b">Sign in</button></form><p class="mute">Create staff users in Supabase → Authentication → Users.</p></div>
-<div id="app" hidden>
-<nav><h1 id="brand">Mini Store</h1>
-<button data-v="shop">Shop</button><button data-v="products">Products</button><button data-v="deliveries">Deliveries</button><button data-v="sales">Sales</button><button data-v="restock">Restock</button><button class="out" id="so">Sign out</button></nav>
-<main id="main"></main></div>
-<div id="msg" role="status"></div>
+<div class="app"><nav id="nav"></nav><main id="main"></main></div><div id="toast" role="status"></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script src="config.js"></script>
 <script>
-// All settings come from Config.js. try/catch keeps the app alive if Config.js is missing or incomplete.
-const G=f=>{try{return f()}catch(e){return undefined}};
-const URL_=G(()=>SUPABASE_URL)||'',KEY_=G(()=>SUPABASE_KEY)||'';
-const C={store:G(()=>STORE_NAME)||'Store',cur:G(()=>CURRENCY)||'',fee:+G(()=>DELIVERY_FEE)||0};
-let db=null,cart=[];
-if(/^https?:\/\//.test(URL_)&&KEY_&&!KEY_.startsWith('YOUR_'))db=supabase.createClient(URL_,KEY_);
-const $=s=>document.querySelector(s),main=$('#main'),iso=d=>d.toISOString().slice(0,10);
+const DAY=864e5,C=window.APP_CONFIG||{};let S={products:[],orders:[],ledger:[]},tab='dash',wd='',user=null,db=null;
 const esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-const money=n=>C.cur+Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
-function toast(t,err){const m=$('#msg');m.textContent=t;m.className=err?'err':'';m.style.display='block';clearTimeout(toast.t);toast.t=setTimeout(()=>m.style.display='none',4000)}
-const fail=e=>toast(e.message+(/does not exist|schema cache|permission denied/i.test(e.message)?' (run setup.sql in Supabase and check your policies)':''),1);
-async function get(p){const {data,error}=await p;if(error){fail(error);return[]}return data||[]}
-async function run(p,ok){const {data,error}=await p;if(error){fail(error);return null}if(ok)toast(ok);return data??true}
-const tbl=(cols,rows)=>`<table><tr>${cols.map(c=>`<th class="${c[2]||''}">${c[0]}</th>`).join('')}</tr>${rows.length?rows.map(r=>`<tr>${cols.map(c=>`<td class="${c[2]||''}">${c[1](r)}</td>`).join('')}</tr>`).join(''):`<tr><td colspan="${cols.length}" class="mute">Nothing here yet.</td></tr>`}</table>`;
-const csv=(name,head,rows)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([head+'\n'+rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'}));a.download=name;a.click()};
+const P=n=>'₱'+Math.round(n).toLocaleString('en-PH');
+const sum=(a,f)=>a.reduce((s,x)=>s+f(x),0);
+const cash=()=>sum(S.ledger,e=>e.t==='sale'||e.t==='capital'?e.a:-e.a);
+const dels=()=>S.orders.filter(o=>o.st==='Delivered');
+const profit=()=>sum(dels(),o=>(o.price-o.cost)*o.qty);
+const taken=()=>sum(S.ledger.filter(e=>e.t==='withdraw'),e=>e.a);
+const safe=()=>Math.max(0,profit()-taken());
+const low=()=>S.products.filter(p=>p.stock<=5);
+const need=()=>sum(low(),p=>(10-p.stock)*p.cost);
+function toast(m){const t=document.getElementById('toast');t.textContent=m;t.style.display='block';clearTimeout(toast.h);toast.h=setTimeout(()=>t.style.display='none',3600)}
+function go(t){tab=t;wd='';draw()}
+const num=id=>parseFloat(document.getElementById(id).value)||0;
+const val=id=>document.getElementById(id).value.trim();
+const run=async q=>{const{error}=await q;if(error){toast(error.message);return false}return true};
 
-function showSetup(){$('#login').hidden=$('#app').hidden=true;$('#setup').hidden=false;
- $('#why').textContent=(!URL_&&!KEY_)?'Config.js was not found or is empty. Upload Config.js next to index.html.':'Open Config.js and set SUPABASE_URL and SUPABASE_KEY (anon public key), then reload.'}
-async function boot(){document.title=C.store;$('#brand').textContent=C.store;
- if(!db)return showSetup();$('#setup').hidden=true;const {data:{session}}=await db.auth.getSession();
- $('#login').hidden=!!session;$('#app').hidden=!session;if(session)go(location.hash.slice(1)||'shop')}
-$('#lf').onsubmit=async e=>{e.preventDefault();if(!db)return showSetup();const f=e.target;
- const {error}=await db.auth.signInWithPassword({email:f.e.value,password:f.p.value});error?toast(error.message,1):boot()};
-$('#so').onclick=async()=>{await db.auth.signOut();cart=[];boot()};
-document.querySelectorAll('nav [data-v]').forEach(b=>b.onclick=()=>go(b.dataset.v));
-async function go(v){if(!views[v])v='shop';location.hash=v;document.querySelectorAll('nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));
- try{await views[v]()}catch(e){main.innerHTML=`<p class="low">Something went wrong: ${esc(e.message)}</p>`}}
+async function load(){const[a,b,c]=await Promise.all([db.from('products').select('*').order('id'),db.from('orders').select('*').order('id'),db.from('ledger').select('*').order('id')]);
+const err=a.error||b.error||c.error;if(err)return toast(err.message);S={products:a.data,orders:b.data,ledger:c.data};draw()}
 
-const views={
-async shop(){
- const [p,rc]=await Promise.all([get(db.from('v_stock').select('*').order('name')),get(db.from('sales').select('*, deliveries(status)').order('created_at',{ascending:false}).limit(8))]);
- const cats=[...new Set(p.map(x=>x.category).filter(Boolean))];let cat='';
- main.innerHTML=`<div class="shop"><section><div class="row"><input id="q" class="grow" placeholder="Search product or SKU"></div><div class="chips" id="chips"></div><div class="grid" id="grid"></div>
- <h3>Recent orders</h3>${tbl([['#',r=>r.sale_no],['Time',r=>new Date(r.created_at).toLocaleString()],['Customer',r=>esc(r.customer_name)||'Walk-in'],['Type',r=>r.deliveries?.status||'Pick-up'],['Total',r=>money(r.total),'r']],rc)}</section>
- <aside><h3>Your order</h3><div id="cart"></div><form id="sf"><label>Customer<input name="c"></label><label>Payment<select name="pay"><option>cash</option><option>card</option><option>e-wallet</option></select></label><label>Order type<select name="d"><option value="">Pick-up at counter</option><option value="1">Delivery</option></select></label>
- <div id="dl" hidden><label>Address<input name="a"></label><label>Phone<input name="ph"></label><label>Delivery fee<input name="fee" type="number" step="0.01" min="0" value="${C.fee}"></label></div><button class="b">Complete order</button></form></aside></div>`;
- const f=$('#sf'),sub=()=>cart.reduce((a,r)=>a+r.qty*r.price,0),fee=()=>f.d.value?+f.fee.value||0:0;
- const draw=()=>{$('#cart').innerHTML=cart.length?tbl([['Item',r=>esc(r.name)],['Qty',r=>`<button class="b alt" data-m="${r.id}">−</button> ${r.qty} <button class="b alt" data-p="${r.id}">+</button>`,'r']],cart)+`<p class="r mute">Subtotal ${money(sub())}${fee()?'<br>Delivery '+money(fee()):''}<br><b style="font-size:18px;color:var(--ink)">Total ${money(sub()+fee())}</b></p>`:'<p class="mute">Cart is empty. Tap Add on a product.</p>';
-  document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{const r=cart.find(x=>x.id===b.dataset.m);if(--r.qty<=0)cart=cart.filter(x=>x!==r);draw()});
-  document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>add(b.dataset.p))};
- const add=id=>{const x=p.find(r=>r.id===id),ex=cart.find(r=>r.id===id);if((ex?ex.qty:0)+1>x.on_hand)return toast('Only '+x.on_hand+' in stock',1);ex?ex.qty++:cart.push({id:x.id,name:x.name,price:x.price,qty:1});draw()};
- const chips=()=>{$('#chips').innerHTML=['',...cats].map(c=>`<button class="${c===cat?'on':''}" data-c="${esc(c)}">${c?esc(c):'All'}</button>`).join('');document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{cat=b.dataset.c;chips();shelf()})};
- const shelf=()=>{const k=$('#q').value.toLowerCase();
-  $('#grid').innerHTML=p.filter(x=>(x.name+x.sku).toLowerCase().includes(k)&&(!cat||x.category===cat)).map(x=>`<div class="card"><div class="av">${esc((x.name||'?')[0].toUpperCase())}</div><b>${esc(x.name)}</b><span class="mute">${esc(x.category)}</span><span class="price">${money(x.price)}</span><small class="${x.on_hand?'mute':'low'}">${x.on_hand?x.on_hand+' in stock':'Out of stock'}</small><button class="b" data-a="${x.id}" ${x.on_hand?'':'disabled'}>Add</button></div>`).join('')||'<p class="mute">No matching products.</p>';
-  document.querySelectorAll('[data-a]').forEach(b=>b.onclick=()=>add(b.dataset.a))};
- f.d.onchange=()=>{$('#dl').hidden=!f.d.value;draw()};f.fee.oninput=draw;$('#q').oninput=shelf;chips();shelf();draw();
- f.onsubmit=async e=>{e.preventDefault();if(!cart.length)return toast('Add at least one item',1);if(f.d.value&&!f.a.value)return toast('Enter a delivery address',1);
-  if(await run(db.rpc('create_sale',{p_items:cart.map(r=>({product_id:r.id,qty:r.qty})),p_customer:f.c.value||null,p_payment:f.pay.value,p_address:f.d.value?f.a.value:null,p_phone:f.ph.value||null,p_fee:fee()}),'Order completed')){cart=[];views.shop()}}},
+let mode='in',busy=false;
+function setMode(m){mode=m;loginView()}
+async function authGo(){if(busy)return;const em=mode==='reset'?'':val('em'),pwe=document.getElementById('pw'),pw=pwe?pwe.value:'';
+const msg=t=>{document.getElementById('am').innerHTML=t},bad=t=>msg('<span class="bad">'+esc(t)+'</span>'),ok=t=>msg('<span class="good">'+esc(t)+'</span>');
+if(mode!=='reset'&&!/^\S+@\S+\.\S+$/.test(em))return bad('Enter a valid email.');
+if(mode!=='forgot'&&pw.length<6)return bad('Password must be at least 6 characters.');
+if(mode==='up'&&pw!==document.getElementById('pw2').value)return bad('Passwords do not match.');
+busy=true;msg('Please wait…');let r;
+try{
+if(mode==='in')r=await db.auth.signInWithPassword({email:em,password:pw});
+else if(mode==='up')r=await db.auth.signUp({email:em,password:pw});
+else if(mode==='forgot')r=await db.auth.resetPasswordForEmail(em,{redirectTo:location.href.split('#')[0]});
+else r=await db.auth.updateUser({password:pw});
+}catch(e){r={error:e}}
+busy=false;
+if(r.error)return bad(r.error.message);
+if(mode==='up'&&!(r.data&&r.data.session))ok('Account created. Check your email to confirm, then sign in.');
+else if(mode==='forgot')ok('Reset link sent. Check your email.');
+else if(mode==='reset')mode='in';
+}
+async function signOut(){await db.auth.signOut();S={products:[],orders:[],ledger:[]}}
+function loginView(){document.getElementById('nav').innerHTML='';
+const T={in:'Sign in',up:'Create account',forgot:'Reset password',reset:'Set a new password'}[mode];
+const f=(id,l,ac)=>'<label>'+l+'<input id="'+id+'" type="'+(id==='em'?'email':'password')+'" autocomplete="'+ac+'"></label>';
+const lk=(m,t)=>'<button class="b o" onclick="setMode(\''+m+'\')">'+t+'</button>';
+document.getElementById('main').innerHTML='<div class="card" style="max-width:380px;margin:8vh auto" onkeydown="if(event.key===\'Enter\')authGo()"><h2>Tindahan</h2><h3>'+T+'</h3>'+
+(!db?'<p class="bad">Supabase is not set up yet. Open config.js and add your project URL and anon key.</p>':
+'<div class="f" style="flex-direction:column;align-items:stretch">'+(mode!=='reset'?f('em','Email','email'):'')+(mode!=='forgot'?f('pw',mode==='in'?'Password':'New password',mode==='in'?'current-password':'new-password'):'')+(mode==='up'?f('pw2','Confirm password','new-password'):'')+
+'<button class="b" onclick="authGo()">'+T+'</button>'+(mode==='in'?lk('up','Create account')+lk('forgot','Forgot password?'):mode==='reset'?'':lk('in','Back to sign in'))+'<div id="am" role="status" aria-live="polite"></div></div>')+'</div>'}
 
-async products(){
- const p=await get(db.from('v_stock').select('*').order('name')),low=p.filter(x=>x.is_low).length;
- main.innerHTML=`<h2>Products</h2><div class="kpis"><div class="kpi"><b>${p.length}</b><span>Products</span></div><div class="kpi"><b class="${low?'low':''}">${low}</b><span>Low or out of stock</span></div></div>
- <details><summary>Add product</summary><form id="pf"><label>SKU<input name="sku" required></label><label>Name<input name="name" required></label><label>Category<input name="category"></label><label>Price<input name="price" type="number" step="0.01" min="0" required></label><label>Cost<input name="cost" type="number" step="0.01" min="0" value="0"></label><label>Starting stock<input name="st" type="number" min="0" value="0"></label><label>Reorder at<input name="rl" type="number" min="0" value="5"></label><button class="b">Save product</button></form></details>
- <details><summary>Add stock</summary><form id="rf"><label>Product<select name="p">${p.map(x=>`<option value="${x.id}">${esc(x.name)}</option>`).join('')}</select></label><label>Quantity<input name="q" type="number" min="1" required></label><button class="b">Add stock</button></form></details>
- <div class="row"><input id="q" class="grow" placeholder="Search name or SKU"></div><div id="it"></div>`;
- const draw=()=>{const k=$('#q').value.toLowerCase();$('#it').innerHTML=tbl([['SKU',r=>esc(r.sku)],['Product',r=>esc(r.name)],['Category',r=>esc(r.category)],['Price',r=>money(r.price),'r'],['Cost',r=>money(r.cost),'r'],['Stock',r=>`<span class="${r.is_low?'low':''}">${r.on_hand}</span><div class="bar"><i class="${r.is_low?'l':''}" style="width:${Math.min(100,r.on_hand/Math.max(1,r.reorder_level*3)*100)}%"></i></div>`,'r']],p.filter(r=>(r.name+r.sku).toLowerCase().includes(k)))};
- $('#q').oninput=draw;draw();
- $('#pf').onsubmit=async e=>{e.preventDefault();const f=e.target;
-  if(await run(db.from('products').insert({sku:f.sku.value.trim(),name:f.name.value.trim(),category:f.category.value.trim()||null,price:+f.price.value,cost:+f.cost.value,stock:+f.st.value,reorder_level:+f.rl.value}),'Product saved'))views.products()};
- $('#rf').onsubmit=async e=>{e.preventDefault();const f=e.target;
-  if(await run(db.rpc('receive_stock',{p_product:f.p.value,p_qty:+f.q.value}),'Stock added'))views.products()}},
+async function addProduct(){const name=val('pn'),cost=num('pc'),price=num('pp'),stock=Math.floor(num('ps'));
+if(!name||cost<=0||price<=0)return toast('Fill in the name, original price and selling price.');
+if(await run(db.from('products').insert({name,cost,price,stock})))load()}
+async function setP(id,f,v){if(await run(db.from('products').update({[f]:Math.max(0,parseFloat(v)||0)}).eq('id',id)))load()}
+async function delP(id){if(await run(db.from('products').delete().eq('id',id)))load()}
+async function restock(id){const p=S.products.find(x=>x.id==id),q=Math.floor(parseFloat(document.getElementById('r'+id).value)||0);
+if(q<=0)return toast('Enter how many to buy.');const c=q*p.cost;
+if(c>cash())return toast('Kulang ang pondo: need '+P(c)+', you have '+P(cash())+' (short by '+P(c-cash())+').');
+if(await run(db.from('products').update({stock:p.stock+q}).eq('id',id))&&await run(db.from('ledger').insert({t:'restock',a:c,note:q+' × '+p.name+' @ '+P(p.cost)}))){await load();toast('Restocked '+q+' '+p.name+' for '+P(c))}}
+async function addOrder(){const p=S.products.find(x=>x.id==val('op')),q=Math.floor(num('oq'));
+if(!p||q<=0)return toast('Pick a product and quantity.');if(q>p.stock)return toast('Only '+p.stock+' in stock.');
+if(await run(db.from('products').update({stock:p.stock-q}).eq('id',p.id))&&await run(db.from('orders').insert({pid:p.id,name:p.name,qty:q,cost:p.cost,price:p.price,cust:val('oc')||'Walk-in',addr:val('oa')||'-'})))load()}
+async function adv(id){const o=S.orders.find(x=>x.id==id),n=o.st==='Pending'?'Out':'Delivered';
+if(await run(db.from('orders').update({st:n}).eq('id',id))&&(n!=='Delivered'||await run(db.from('ledger').insert({t:'sale',a:o.price*o.qty,note:o.qty+' × '+o.name}))))load()}
+async function cancel(id){const o=S.orders.find(x=>x.id==id),p=S.products.find(x=>x.id==o.pid);
+if(await run(db.from('orders').update({st:'Cancelled'}).eq('id',id))&&(!p||await run(db.from('products').update({stock:p.stock+o.qty}).eq('id',p.id))))load()}
+function preview(){const a=num('wa'),el=document.getElementById('wn');wd=a;
+if(a<=0){el.innerHTML='';return}
+if(a>cash())el.innerHTML='<span class="bad">Not enough cash. You only have '+P(cash())+'.</span>';
+else if(a>safe()){const left=cash()-a;el.innerHTML='<span class="bad">This is more than your profit ('+P(safe())+'). It eats into your puhunan: cash left would be '+P(left)+', '+(left<need()?'short by '+P(need()-left)+' for restocking.':'still enough to restock.')+'</span>'}
+else el.innerHTML='<span class="good">Safe — this comes from your profit.</span> Cash left: '+P(cash()-a)}
+async function withdraw(){const a=num('wa');if(a<=0)return toast('Enter an amount.');if(a>cash())return toast('Not enough cash.');
+wd='';if(await run(db.from('ledger').insert({t:'withdraw',a,note:val('wt')||'Personal use'}))){await load();toast('Withdrew '+P(a))}}
+async function capital(){const a=num('ca');if(a<=0)return toast('Enter an amount.');if(await run(db.from('ledger').insert({t:'capital',a,note:'Added capital'})))load()}
 
-async deliveries(){
- const d=await get(db.from('deliveries').select('*, sales(sale_no,customer_name,total)').order('created_at',{ascending:false}).limit(100));
- const S=['pending','packed','out_for_delivery','delivered','failed','cancelled'];
- main.innerHTML=`<h2>Deliveries</h2>`+tbl([['Sale',r=>'#'+r.sales.sale_no],['Customer',r=>esc(r.sales.customer_name)||'–'],['Address',r=>esc(r.address)+(r.phone?`<br><span class="mute">${esc(r.phone)}</span>`:'')],['Rider',r=>`<input data-rider="${r.id}" value="${esc(r.rider)}" placeholder="Assign rider" size="12">`],['Status',r=>`<select data-st="${r.id}">${S.map(s=>`<option ${s===r.status?'selected':''} value="${s}">${s.replace(/_/g,' ')}</option>`).join('')}</select>`],['Total',r=>money(+r.sales.total+ +r.fee),'r']],d);
- document.querySelectorAll('[data-st]').forEach(s=>s.onchange=()=>run(db.from('deliveries').update({status:s.value,delivered_at:s.value==='delivered'?new Date().toISOString():null}).eq('id',s.dataset.st),'Status updated'));
- document.querySelectorAll('[data-rider]').forEach(i=>i.onchange=()=>run(db.from('deliveries').update({rider:i.value||null}).eq('id',i.dataset.rider),'Rider saved'))},
+function chart(){const m=[];const n=new Date();for(let i=5;i>=0;i--){const d=new Date(n.getFullYear(),n.getMonth()-i,1);m.push({k:d.getFullYear()+'-'+d.getMonth(),l:d.toLocaleString('en',{month:'short'}),v:0})}
+dels().forEach(o=>{const d=new Date(o.d),x=m.find(y=>y.k==d.getFullYear()+'-'+d.getMonth());if(x)x.v+=(o.price-o.cost)*o.qty});
+const mx=Math.max(1,...m.map(x=>x.v));
+return '<svg viewBox="0 0 360 170" width="100%" role="img" aria-label="Profit per month">'+m.map((x,i)=>{const h=x.v/mx*110,X=14+i*57;return '<rect x="'+X+'" y="'+(130-h)+'" width="40" height="'+h+'" rx="5" fill="var(--acc)"/><text x="'+(X+20)+'" y="'+(124-h)+'" text-anchor="middle" font-size="10" fill="var(--ink)">'+(x.v?P(x.v):'')+'</text><text x="'+(X+20)+'" y="150" text-anchor="middle" font-size="11" fill="var(--mut)">'+x.l+'</text>'}).join('')+'</svg>'}
 
-async sales(){
- main.innerHTML=`<h2>Sales and profit</h2><form id="rp"><label>From<input name="f" type="date" value="${iso(new Date(Date.now()-29*864e5))}"></label><label>To<input name="t" type="date" value="${iso(new Date())}"></label><button class="b">Show</button><button class="b alt" type="button" id="cv">Download CSV</button></form><div id="out"></div>`;
- let rows=[];
- const show=async()=>{const f=$('#rp').f.value,u=$('#rp').t.value,by={};
-  const [pf,d]=await Promise.all([get(db.from('v_profit').select('*').gte('day',f).lte('day',u)),get(db.from('v_daily_sales').select('*').gte('day',f).lte('day',u).order('day',{ascending:false}))]);
-  rows=d;pf.forEach(r=>{const o=by[r.name]||(by[r.name]={n:r.name,u:0,rev:0,cogs:0,pr:0});o.u+=r.units;o.rev+=+r.revenue;o.cogs+=+r.cogs;o.pr+=+r.profit});
-  const L=Object.values(by).sort((a,b)=>b.pr-a.pr),T=L.reduce((a,r)=>({rev:a.rev+r.rev,cogs:a.cogs+r.cogs,pr:a.pr+r.pr}),{rev:0,cogs:0,pr:0}),m=(x,y)=>y?(x/y*100).toFixed(1)+'%':'–';
-  $('#out').innerHTML=`<div class="kpis"><div class="kpi"><b>${money(T.rev)}</b><span>Sales</span></div><div class="kpi"><b>${money(T.cogs)}</b><span>Cost of goods</span></div><div class="kpi"><b class="good">${money(T.pr)}</b><span>Profit (kita)</span></div><div class="kpi"><b>${m(T.pr,T.rev)}</b><span>Margin</span></div></div>
-  <h3>Profit by product</h3>${tbl([['Product',r=>esc(r.n)],['Units',r=>r.u,'r'],['Sales',r=>money(r.rev),'r'],['Cost',r=>money(r.cogs),'r'],['Profit',r=>money(r.pr),'r'],['Margin',r=>`<span class="${r.pr/r.rev<.15?'soon':''}">${m(r.pr,r.rev)}</span>`,'r']],L)}
-  <h3>Daily sales</h3>${tbl([['Date',r=>r.day],['Orders',r=>r.sales,'r'],['Revenue',r=>money(r.revenue),'r'],['Profit',r=>money(r.profit),'r']],rows)}`};
- $('#rp').onsubmit=e=>{e.preventDefault();show()};$('#cv').onclick=()=>csv('daily-sales.csv','date,orders,revenue,profit',rows.map(r=>[r.day,r.sales,r.revenue,r.profit]));show()},
+function dash(){const L=low(),short=Math.max(0,need()-cash()),st=S.orders.filter(o=>o.st==='Pending'||o.st==='Out');
+const top={};dels().forEach(o=>top[o.name]=(top[o.name]||0)+(o.price-o.cost)*o.qty);const t=Object.entries(top).sort((a,b)=>b[1]-a[1]).slice(0,6),mx=t[0]?t[0][1]:1;
+return '<h2>Welcome back!</h2><div class="grid">'+
+[[S.products.length,'Products'],[sum(S.products,p=>p.stock),'Units in stock'],[P(cash()),'Cash on hand'],['<span class="good">'+P(profit())+'</span>','Total profit'],[st.length,'Orders to deliver'],['<span class="'+(L.length?'bad':'')+'">'+S.products.filter(p=>p.stock==0).length+'</span>','Out of stock']].map(x=>'<div class="card k"><b>'+x[0]+'</b><span>'+x[1]+'</span></div>').join('')+'</div>'+
+'<div class="grid w"><div class="card"><h3>Profit vs. restock money</h3><p style="margin:0 0 6px">Profit you can take: <b class="good">'+P(safe())+'</b><br>Already taken: <b>'+P(taken())+'</b></p>'+
+(L.length?'<div class="note">'+L.length+' item(s) low or out. Restocking to 10 each costs <b>'+P(need())+'</b>. '+(short?'<span class="bad">Cash is short by '+P(short)+'.</span>':'<span class="good">You have enough cash.</span>')+'</div>':'<div class="note good">Stock levels look fine.</div>')+
+'</div><div class="card"><h3>Profit per month</h3>'+chart()+'</div><div class="card"><h3>Top products by profit</h3>'+(t.length?t.map(([n,v])=>'<div class="bar"><span>'+esc(n)+'</span><i style="width:'+Math.max(6,v/mx*100)+'px"></i><span>'+P(v)+'</span></div>').join(''):'<p>No delivered orders yet.</p>')+'</div></div>'}
 
-async restock(){
- const [r,P]=await Promise.all([get(db.from('v_reorder').select('*').order('on_hand')),get(db.from('purchase_orders').select('*, purchase_items(id,qty,unit_cost,products(name))').order('created_at',{ascending:false}).limit(10))]);
- const L=r.map((x,i)=>({...x,i}));
- main.innerHTML=`<h2>Restock</h2><p class="mute">Products at or below their reorder level. Adjust quantities, then create the purchase order.</p><div id="rl"></div>
- <form id="rf2"><label>Supplier<input name="s" required></label><button class="b">Create purchase order</button><button class="b alt" type="button" id="cv">Download CSV</button></form>
- <h3>Purchase orders</h3><div id="pos"></div>`;
- $('#rl').innerHTML=tbl([['Buy',r=>`<input type="checkbox" data-c="${r.i}" checked>`],['Product',r=>esc(r.name)],['On hand',r=>`<span class="low">${r.on_hand}</span>`,'r'],['Sold, 30 days',r=>r.sold_30d,'r'],['Order qty',r=>`<input data-q="${r.i}" type="number" min="1" value="${r.suggested_qty}" style="width:80px">`,'r'],['Unit cost',r=>money(r.cost),'r']],L);
- const picks=()=>L.filter(x=>$(`[data-c="${x.i}"]`).checked).map(x=>({product_id:x.product_id,name:x.name,qty:+$(`[data-q="${x.i}"]`).value,unit_cost:x.cost})).filter(x=>x.qty>0);
- $('#rf2').onsubmit=async e=>{e.preventDefault();const k=picks();if(!k.length)return toast('Select at least one product',1);
-  if(await run(db.rpc('create_po',{p_supplier:e.target.s.value,p_items:k.map(({product_id,qty,unit_cost})=>({product_id,qty,unit_cost}))}),'Purchase order created'))views.restock()};
- $('#cv').onclick=()=>csv('restock-list.csv','product,quantity,unit_cost,estimated_cost',picks().map(x=>[`"${x.name}"`,x.qty,x.unit_cost,(x.qty*x.unit_cost).toFixed(2)]));
- $('#pos').innerHTML=tbl([['PO',r=>'#'+r.po_no],['Supplier',r=>esc(r.supplier)],['Items',r=>r.purchase_items.map(i=>esc(i.products.name)+' x'+i.qty).join(', ')],['Cost',r=>money(r.purchase_items.reduce((a,i)=>a+i.qty*i.unit_cost,0)),'r'],['Status',r=>r.status],['',r=>r.status==='ordered'?`<button class="b" data-rc="${r.id}">Receive</button>`:'']],P);
- document.querySelectorAll('[data-rc]').forEach(b=>b.onclick=async()=>{if(!confirm('Mark this order as received and add the items to stock?'))return;
-  if(await run(db.rpc('receive_po',{p_po:b.dataset.rc}),'Stock received'))views.restock()})}
-};
-boot();
+function inv(){return '<h2>Inventory</h2><div class="card" style="margin-bottom:14px"><h3>Add product</h3><div class="f"><label>Name<input id="pn"></label><label>Original price (puhunan)<input id="pc" type="number" min="0"></label><label>Selling price<input id="pp" type="number" min="0"></label><label>Stock<input id="ps" type="number" min="0" value="0"></label><button class="b" onclick="addProduct()">Add product</button></div></div>'+
+'<div class="card sc"><table><tr><th>Product</th><th>Original price</th><th>Selling price</th><th>Profit / unit</th><th>Stock</th><th>Buy more</th><th></th></tr>'+
+S.products.map(p=>'<tr><td>'+esc(p.name)+'</td><td><input type="number" value="'+p.cost+'" onchange="setP('+p.id+',\'cost\',this.value)" aria-label="Original price"></td><td><input type="number" value="'+p.price+'" onchange="setP('+p.id+',\'price\',this.value)" aria-label="Selling price"></td><td class="'+(p.price>p.cost?'good':'bad')+'">'+P(p.price-p.cost)+'</td><td class="'+(p.stock==0?'bad':p.stock<=5?'warn':'')+'"><b>'+p.stock+'</b></td><td><input class="q" id="r'+p.id+'" type="number" min="1" value="10" aria-label="Quantity to buy"> <button class="b o" onclick="restock('+p.id+')">Restock</button></td><td><button class="b o" onclick="delP('+p.id+')" aria-label="Delete">✕</button></td></tr>').join('')+'</table></div><p style="color:var(--mut);font-size:13px">Restock takes the cost out of your cash on hand ('+P(cash())+').</p>'}
+
+function ord(){const lab={Pending:'Pending',Out:'Out for delivery',Delivered:'Delivered',Cancelled:'Cancelled'},nx={Pending:'Send out',Out:'Mark delivered'};
+return '<h2>Orders & delivery</h2><div class="card" style="margin-bottom:14px"><h3>New order</h3><div class="f"><label>Product<select id="op">'+S.products.filter(p=>p.stock>0).map(p=>'<option value="'+p.id+'">'+esc(p.name)+' ('+p.stock+' left)</option>').join('')+'</select></label><label>Qty<input id="oq" type="number" min="1" value="1" style="width:70px"></label><label>Customer<input id="oc"></label><label>Address<input id="oa"></label><button class="b" onclick="addOrder()">Create order</button></div></div>'+
+'<div class="card sc"><table><tr><th>Order</th><th>Customer</th><th>Total</th><th>Profit</th><th>Status</th><th></th></tr>'+
+S.orders.slice().reverse().map(o=>'<tr><td>'+o.qty+' × '+esc(o.name)+'</td><td>'+esc(o.cust)+'<br><small style="color:var(--mut)">'+esc(o.addr)+'</small></td><td>'+P(o.price*o.qty)+'</td><td class="good">'+P((o.price-o.cost)*o.qty)+'</td><td><span class="pill p-'+o.st+'">'+lab[o.st]+'</span></td><td>'+(nx[o.st]?'<button class="b" onclick="adv('+o.id+')">'+nx[o.st]+'</button> <button class="b o" onclick="cancel('+o.id+')">Cancel</button>':'')+'</td></tr>').join('')+'</table></div><p style="color:var(--mut);font-size:13px">Money from an order goes into your cash only after it is marked delivered.</p>'}
+
+function cashv(){const L=S.ledger.slice().reverse();
+return '<h2>Cash & withdrawals</h2><div class="grid"><div class="card k"><b>'+P(cash())+'</b><span>Cash on hand</span></div><div class="card k"><b class="good">'+P(safe())+'</b><span>Profit you can take</span></div><div class="card k"><b>'+P(taken())+'</b><span>Taken so far</span></div><div class="card k"><b class="'+(need()>cash()?'bad':'')+'">'+P(need())+'</b><span>Needed to restock low items</span></div></div>'+
+'<div class="grid w"><div class="card"><h3>Take money</h3><div class="f"><label>Amount<input id="wa" type="number" min="0" value="'+wd+'" oninput="preview()"></label><label>For<input id="wt" placeholder="Personal use"></label><button class="b" onclick="withdraw()">Take money</button></div><div id="wn" class="note" aria-live="polite"></div></div>'+
+'<div class="card"><h3>Add capital</h3><div class="f"><label>Amount<input id="ca" type="number" min="0"></label><button class="b" onclick="capital()">Add</button></div></div></div>'+
+'<div class="card sc"><h3>History</h3><table><tr><th>Date</th><th>Type</th><th>Details</th><th>Amount</th></tr>'+L.map(e=>{const inn=e.t==='sale'||e.t==='capital';return '<tr><td>'+new Date(e.d).toLocaleDateString('en-PH',{month:'short',day:'numeric'})+'</td><td>'+({sale:'Sale',capital:'Capital',restock:'Restock',withdraw:'Withdrawal'})[e.t]+'</td><td>'+esc(e.note)+'</td><td class="'+(inn?'good':'bad')+'">'+(inn?'+':'−')+P(e.a)+'</td></tr>'}).join('')+'</table></div>'}
+
+function draw(){if(!user){loginView();return}const T=[['dash','Dashboard'],['inv','Inventory'],['ord','Orders & delivery'],['cash','Cash & withdrawals']];
+document.getElementById('nav').innerHTML='<h1>Tindahan</h1>'+T.map(t=>'<button class="'+(tab==t[0]?'on':'')+'" onclick="go(\''+t[0]+'\')">'+t[1]+'</button>').join('');
+document.getElementById('nav').insertAdjacentHTML('beforeend','<button onclick="signOut()" style="margin-top:auto">Sign out<br><small>'+esc(user.email)+'</small></button>');
+document.getElementById('main').innerHTML=({dash,inv,ord,cash:cashv})[tab]();if(tab=='cash'&&wd)preview()}
+try{if(C.SUPABASE_URL&&!C.SUPABASE_URL.includes('YOUR-PROJECT'))db=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY)}catch(e){}
+if(db){db.auth.onAuthStateChange((ev,s)=>{if(ev==='PASSWORD_RECOVERY'){mode='reset';user=null;loginView();return}user=s?s.user:null;if(user)load();else{mode='in';draw()}})}else draw();
 </script></body></html>
