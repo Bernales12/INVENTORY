@@ -148,7 +148,7 @@ document.getElementById('nav').insertAdjacentHTML('beforeend','<button onclick="
 document.getElementById('main').innerHTML=({dash,inv,ord,cash:cashv})[tab]();if(tab=='cash'&&wd)preview()}
 let why='';
 if(!window.APP_CONFIG)why='config.js was not found. Keep it in the same folder as index.html.';
-else if(!C.SUPABASE_URL||!C.SUPABASE_ANON_KEY||C.SUPABASE_URL.includes('YOUR-PROJECT')||C.SUPABASE_ANON_KEY.includes('YOUR-ANON'))why='config.js still has the placeholder values.';
+else if(!C.SUPABASE_URL||!C.SUPABASE_ANON_KEY||C.SUPABASE_URL.includes('https://qejpamcqqemisvvkgiqs.supabase.co')||C.SUPABASE_ANON_KEY.includes('sb_publishable_lm5YQ4cXV9A2sDvUNFdHyg_t_wkfvrK'))why='config.js still has the placeholder values.';
 else if(typeof supabase==='undefined')why='The Supabase library did not load. Check your internet connection or ad-blocker.';
 else try{db=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY)}catch(e){why=e.message}
 if(db){db.auth.onAuthStateChange((ev,s)=>{if(ev==='PASSWORD_RECOVERY'){mode='reset';user=null;loginView();return}user=s?s.user:null;if(user)load();else{mode='in';draw()}})}else draw();
