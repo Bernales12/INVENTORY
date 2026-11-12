@@ -53,7 +53,7 @@ main.lg{display:grid;place-items:center;min-height:100vh;padding:20px;background
 <script src="config.js"></script>
 <script>
 /* Backup config: used only if config.js is missing or not found next to this file. */
-window.APP_CONFIG=window.APP_CONFIG||{SUPABASE_URL:'https://itwnasctmbnmdxghsmpy.supabase.co',SUPABASE_ANON_KEY:'sb_publishable_ITZWLZI-6pRrVynDhxDqPQ_H2fiNcMW'};
+window.APP_CONFIG=window.APP_CONFIG||{SUPABASE_URL:'https://fhcguxmehcuzkeqnnnnd.supabase.co',SUPABASE_ANON_KEY:'sb_publishable_FwOwTGVLHMks6nYAaOg13w_uwAnJfSj'};
 </script>
 <script>
 const DAY=864e5,C=window.APP_CONFIG||{};let S={products:[],orders:[],ledger:[]},tab='dash',wd='',user=null,db=null;
