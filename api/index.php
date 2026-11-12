@@ -4,6 +4,7 @@
 <title>Pharmacy Store</title>
 <link href="https://fonts.googleapis.com/css2?family=Public+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script src="config.js"></script>
 <style>
 :root{--pine:#12372a;--bone:#fafbf8;--mist:#eaf0eb;--ink:#17211c;--mute:#5d6b63;--amber:#b7791f;--red:#b3261e;--ok:#2d7a4f;--line:#d5ded7}
 *{box-sizing:border-box}body{margin:0;font:15px/1.5 "Public Sans",system-ui,sans-serif;color:var(--ink);background:var(--bone)}
@@ -37,18 +38,18 @@ aside{background:var(--mist);border-radius:8px;padding:14px;align-self:start;pos
 details{margin:8px 0}summary{cursor:pointer;color:var(--pine);font-weight:500}
 @media(max-width:700px){#app{grid-template-columns:1fr}nav{flex-direction:row;flex-wrap:wrap}nav .out{margin:0}main{padding:16px}table{display:block;overflow-x:auto}}
 </style></head><body>
-<div id="setup" hidden><h2>Connect to Supabase</h2><form id="cf"><label>Project URL<input name="u" placeholder="https://xxxx.supabase.co" required></label><label>Anon public key<input name="k" required></label><button class="b">Connect</button></form><p class="mute">Find both in Supabase, Project Settings, API. They are saved in this browser only.</p></div>
+<div id="setup" hidden><h2>Not connected</h2><p class="mute">Open config.js, set your Supabase project URL and anon key, then reload.</p></div>
 <div id="login" hidden><h2>Pharmacy Stock</h2><form id="lf"><label>Email<input name="e" type="email" required></label><label>Password<input name="p" type="password" required></label><button class="b">Sign in</button></form><p class="mute">Create staff users in Supabase → Authentication → Users.</p></div>
 <div id="app" hidden><nav><h1>Pharmacy Store</h1>
 <button data-v="dashboard">Dashboard</button><button data-v="inventory">Inventory</button><button data-v="store">Store</button><button data-v="deliveries">Deliveries</button><button data-v="profit">Profit</button><button data-v="restock">Restock</button><button data-v="reports">Reports</button><button data-v="settings">Settings</button><button class="out" id="so">Sign out</button></nav><main id="main"></main></div>
 <div id="msg" role="status"></div>
 <script>
-// Settings live in the app (Settings tab). You can also hard-code your Supabase details here.
-const DEFAULT_URL='YOUR_PROJECT_URL', DEFAULT_KEY='YOUR_ANON_KEY';
-let C={url:DEFAULT_URL,key:DEFAULT_KEY,store:'Pharmacy Store',cur:'$',fee:0,expiry:90};
+// Supabase URL and key live in config.js. App preferences live in the Settings tab.
+const {url:SB_URL,key:SB_KEY}=(window.APP_CONFIG&&window.APP_CONFIG.supabase)||{};
+let C={store:'Pharmacy Store',cur:'$',fee:0,expiry:90};
 try{Object.assign(C,JSON.parse(localStorage.getItem('pharmacyCfg')||'{}'))}catch(e){}
 let CUR=C.cur,db=null;
-if(/^https?:\/\//.test(C.url)&&C.key&&C.key!==DEFAULT_KEY)db=supabase.createClient(C.url,C.key);
+if(/^https?:\/\//.test(SB_URL||'')&&SB_KEY&&!SB_KEY.startsWith('YOUR_'))db=supabase.createClient(SB_URL,SB_KEY);
 const saveCfg=()=>{try{localStorage.setItem('pharmacyCfg',JSON.stringify(C))}catch(e){toast('Could not save settings in this browser',1)}};
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=n=>CUR+Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
@@ -64,8 +65,6 @@ async function boot(){document.title=C.store;document.querySelector('nav h1').te
  $('#login').hidden=!!session;$('#app').hidden=!session;if(session)go(location.hash.slice(1)||'dashboard')}
 $('#lf').onsubmit=async e=>{e.preventDefault();const f=e.target;
  const {error}=await db.auth.signInWithPassword({email:f.e.value,password:f.p.value});error?toast(error.message,1):boot()};
-const connect=(u,k)=>{u=u.trim();if(!/^https?:\/\//.test(u))return toast('URL must start with https://',1);C.url=u;C.key=k.trim();saveCfg();location.reload()};
-$('#cf').onsubmit=e=>{e.preventDefault();connect(e.target.u.value,e.target.k.value)};
 $('#so').onclick=async()=>{await db.auth.signOut();boot()};
 document.querySelectorAll('nav [data-v]').forEach(b=>b.onclick=()=>go(b.dataset.v));
 function go(v){location.hash=v;document.querySelectorAll('nav [data-v]').forEach(b=>b.classList.toggle('on',b.dataset.v===v));(views[v]||views.dashboard)()}
@@ -159,10 +158,8 @@ async restock(){
 
 async settings(){
  main.innerHTML=`<h2>Settings</h2><form id="st"><label>Store name<input name="s" value="${esc(C.store)}"></label><label>Currency symbol<input name="c" value="${esc(C.cur)}" size="4"></label><label>Default delivery fee<input name="f" type="number" step="0.01" min="0" value="${C.fee}"></label><label>Expiry alert (days, max 90)<input name="x" type="number" min="1" max="90" value="${C.expiry}"></label><button class="b">Save settings</button></form>
- <h3>Supabase connection</h3><form id="cn"><label>Project URL<input name="u" value="${esc(C.url)}" size="34"></label><label>Anon public key<input name="k" value="${esc(C.key)}" size="34"></label><button class="b alt">Update connection</button></form>
- <p class="mute">Settings are saved in this browser. Reorder levels are set per product in Inventory.</p>`;
- $('#st').onsubmit=e=>{e.preventDefault();const f=e.target;C.store=f.s.value.trim()||'Pharmacy Store';C.cur=f.c.value||'$';C.fee=+f.f.value||0;C.expiry=Math.min(90,Math.max(1,+f.x.value||90));saveCfg();location.reload()};
- $('#cn').onsubmit=e=>{e.preventDefault();connect(e.target.u.value,e.target.k.value)}},
+ <p class="mute">Settings are saved in this browser. Reorder levels are set per product in Inventory. The Supabase connection is set in config.js.</p>`;
+ $('#st').onsubmit=e=>{e.preventDefault();const f=e.target;C.store=f.s.value.trim()||'Pharmacy Store';C.cur=f.c.value||'$';C.fee=+f.f.value||0;C.expiry=Math.min(90,Math.max(1,+f.x.value||90));saveCfg();location.reload()}},
 
 async reports(){
  const to=new Date(),from=new Date(Date.now()-29*864e5);
