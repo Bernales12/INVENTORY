@@ -70,18 +70,15 @@ async function authGo(){if(busy)return;const em=mode==='reset'?'':val('em'),pwe=
 const msg=t=>{document.getElementById('am').innerHTML=t},bad=t=>msg('<span class="bad">'+esc(t)+'</span>'),ok=t=>msg('<span class="good">'+esc(t)+'</span>');
 if(mode!=='reset'&&!/^\S+@\S+\.\S+$/.test(em))return bad('Enter a valid email.');
 if(mode!=='forgot'&&pw.length<6)return bad('Password must be at least 6 characters.');
-if(mode==='up'&&pw!==document.getElementById('pw2').value)return bad('Passwords do not match.');
 busy=true;msg('Please wait…');let r;
 try{
 if(mode==='in')r=await db.auth.signInWithPassword({email:em,password:pw});
-else if(mode==='up')r=await db.auth.signUp({email:em,password:pw});
 else if(mode==='forgot')r=await db.auth.resetPasswordForEmail(em,{redirectTo:location.href.split('#')[0]});
 else r=await db.auth.updateUser({password:pw});
 }catch(e){r={error:e}}
 busy=false;
 if(r.error)return bad(r.error.message);
-if(mode==='up'&&!(r.data&&r.data.session))ok('Account created. Check your email to confirm, then sign in.');
-else if(mode==='forgot')ok('Reset link sent. Check your email.');
+if(mode==='forgot')ok('Reset link sent. Check your email.');
 else if(mode==='reset')mode='in';
 }
 async function signOut(){await db.auth.signOut();S={products:[],orders:[],ledger:[]}}
@@ -91,8 +88,8 @@ const f=(id,l,ac)=>'<label>'+l+'<input id="'+id+'" type="'+(id==='em'?'email':'p
 const lk=(m,t)=>'<button class="b o" onclick="setMode(\''+m+'\')">'+t+'</button>';
 document.getElementById('main').innerHTML='<div class="card" style="max-width:380px;margin:8vh auto" onkeydown="if(event.key===\'Enter\')authGo()"><h2>Tindahan</h2><h3>'+T+'</h3>'+
 (!db?'<p class="bad">Supabase is not connected. '+esc(why)+'</p>':
-'<div class="f" style="flex-direction:column;align-items:stretch">'+(mode!=='reset'?f('em','Email','email'):'')+(mode!=='forgot'?f('pw',mode==='in'?'Password':'New password',mode==='in'?'current-password':'new-password'):'')+(mode==='up'?f('pw2','Confirm password','new-password'):'')+
-'<button class="b" onclick="authGo()">'+T+'</button>'+(mode==='in'?lk('up','Create account')+lk('forgot','Forgot password?'):mode==='reset'?'':lk('in','Back to sign in'))+'<div id="am" role="status" aria-live="polite"></div></div>')+'</div>'}
+'<div class="f" style="flex-direction:column;align-items:stretch">'+(mode!=='reset'?f('em','Email','email'):'')+(mode!=='forgot'?f('pw',mode==='in'?'Password':'New password',mode==='in'?'current-password':'new-password'):'')+
+'<button class="b" onclick="authGo()">'+T+'</button>'+(mode==='in'?lk('forgot','Forgot password?'):mode==='reset'?'':lk('in','Back to sign in'))+'<div id="am" role="status" aria-live="polite"></div></div>')+'</div>'}
 
 async function addProduct(){const name=val('pn'),cost=num('pc'),price=num('pp'),stock=Math.floor(num('ps'));
 if(!name||cost<=0||price<=0)return toast('Fill in the name, original price and selling price.');
