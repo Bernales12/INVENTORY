@@ -1,11 +1,9 @@
-// CONFIG — Supabase
-// Kunin sa Supabase: Project Settings -> API
-const SUPABASE_URL = 'https://ztxmtctnfmjlfkniewwi.supabase.co';   // https://xxxx.supabase.co
-const SUPABASE_KEY = 'sb_publishable_5QblJ9Qc17h5z_yd8w--cg_YOHNL5KA';      // anon public key lang, HUWAG ang database password
+// Mini Store config. Upload this next to index.html.
+// Supabase → Project Settings → API: copy the Project URL and the "anon public" key.
+// Never put the service_role key here.
+const SUPABASE_URL = 'https://coagmazrnigerjhpmtro.supabase.co';        // e.g. https://abcdxyz.supabase.co
+const SUPABASE_KEY = 'sb_publishable_E-eAgfcrhVn0pn0Gswpl4Q_WtHBwakj';   // anon public key
 
-
-// Default app settings (puwede pa ring palitan sa Settings tab)
-const STORE_NAME = 'Pharmacy Store';
-const CURRENCY = '$';
-const DELIVERY_FEE = 0;
-const EXPIRY_WARNING_DAYS = 90;
+const STORE_NAME   = 'Mini Store';
+const CURRENCY     = '₱';
+const DELIVERY_FEE = 50;   // default delivery fee, can be changed per order
