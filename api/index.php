@@ -52,15 +52,14 @@ details{margin:8px 0}summary{cursor:pointer;color:var(--pine);font-weight:500}
 <div id="login" hidden><h2>Staff sign in</h2><form id="lf"><label>Email<input name="e" type="email" required></label><label>Password<input name="p" type="password" required></label><button class="b">Sign in</button></form><p class="mute">Create staff users in Supabase → Authentication → Users.</p></div>
 <div id="app" hidden>
 <nav><h1 id="brand">Mini Store</h1>
-<button data-v="shop">Shop</button><button data-v="products">Products</button><button data-v="deliveries">Deliveries</button><button data-v="sales">Sales</button><button data-v="restock">Restock</button><button data-v="settings">Settings</button><button class="out" id="so">Sign out</button></nav>
+<button data-v="shop">Shop</button><button data-v="products">Products</button><button data-v="deliveries">Deliveries</button><button data-v="sales">Sales</button><button data-v="restock">Restock</button><button class="out" id="so">Sign out</button></nav>
 <main id="main"></main></div>
 <div id="msg" role="status"></div>
 <script>
-// Values come from config.js. try/catch keeps the app alive if config.js is missing or incomplete.
+// All settings come from Config.js. try/catch keeps the app alive if Config.js is missing or incomplete.
 const G=f=>{try{return f()}catch(e){return undefined}};
 const URL_=G(()=>SUPABASE_URL)||'',KEY_=G(()=>SUPABASE_KEY)||'';
-let C={store:G(()=>STORE_NAME)||'Mini Store',cur:G(()=>CURRENCY)||'₱',fee:+G(()=>DELIVERY_FEE)||0};
-try{Object.assign(C,JSON.parse(localStorage.getItem('miniStoreCfg')||'{}'))}catch(e){}
+const C={store:G(()=>STORE_NAME)||'Store',cur:G(()=>CURRENCY)||'',fee:+G(()=>DELIVERY_FEE)||0};
 let db=null,cart=[];
 if(/^https?:\/\//.test(URL_)&&KEY_&&!KEY_.startsWith('YOUR_'))db=supabase.createClient(URL_,KEY_);
 const $=s=>document.querySelector(s),main=$('#main'),iso=d=>d.toISOString().slice(0,10);
@@ -74,7 +73,7 @@ const tbl=(cols,rows)=>`<table><tr>${cols.map(c=>`<th class="${c[2]||''}">${c[0]
 const csv=(name,head,rows)=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([head+'\n'+rows.map(r=>r.join(',')).join('\n')],{type:'text/csv'}));a.download=name;a.click()};
 
 function showSetup(){$('#login').hidden=$('#app').hidden=true;$('#setup').hidden=false;
- $('#why').textContent=(!URL_&&!KEY_)?'config.js was not found or is empty. Upload config.js next to index.html.':'Open config.js and set SUPABASE_URL and SUPABASE_KEY (anon public key), then reload.'}
+ $('#why').textContent=(!URL_&&!KEY_)?'Config.js was not found or is empty. Upload Config.js next to index.html.':'Open Config.js and set SUPABASE_URL and SUPABASE_KEY (anon public key), then reload.'}
 async function boot(){document.title=C.store;$('#brand').textContent=C.store;
  if(!db)return showSetup();$('#setup').hidden=true;const {data:{session}}=await db.auth.getSession();
  $('#login').hidden=!!session;$('#app').hidden=!session;if(session)go(location.hash.slice(1)||'shop')}
@@ -151,13 +150,7 @@ async restock(){
  $('#cv').onclick=()=>csv('restock-list.csv','product,quantity,unit_cost,estimated_cost',picks().map(x=>[`"${x.name}"`,x.qty,x.unit_cost,(x.qty*x.unit_cost).toFixed(2)]));
  $('#pos').innerHTML=tbl([['PO',r=>'#'+r.po_no],['Supplier',r=>esc(r.supplier)],['Items',r=>r.purchase_items.map(i=>esc(i.products.name)+' x'+i.qty).join(', ')],['Cost',r=>money(r.purchase_items.reduce((a,i)=>a+i.qty*i.unit_cost,0)),'r'],['Status',r=>r.status],['',r=>r.status==='ordered'?`<button class="b" data-rc="${r.id}">Receive</button>`:'']],P);
  document.querySelectorAll('[data-rc]').forEach(b=>b.onclick=async()=>{if(!confirm('Mark this order as received and add the items to stock?'))return;
-  if(await run(db.rpc('receive_po',{p_po:b.dataset.rc}),'Stock received'))views.restock()})},
-
-async settings(){
- main.innerHTML=`<h2>Settings</h2><form id="st"><label>Store name<input name="s" value="${esc(C.store)}"></label><label>Currency symbol<input name="c" value="${esc(C.cur)}" size="4"></label><label>Default delivery fee<input name="f" type="number" step="0.01" min="0" value="${C.fee}"></label><button class="b">Save settings</button></form>
- <p class="mute">Saved in this browser. Reorder levels are set per product. The Supabase connection is set in config.js.</p>`;
- $('#st').onsubmit=e=>{e.preventDefault();const f=e.target;C.store=f.s.value.trim()||'Mini Store';C.cur=f.c.value||'₱';C.fee=+f.f.value||0;
-  try{localStorage.setItem('miniStoreCfg',JSON.stringify(C))}catch(x){toast('Could not save settings',1)}location.reload()}}
+  if(await run(db.rpc('receive_po',{p_po:b.dataset.rc}),'Stock received'))views.restock()})}
 };
 boot();
 </script></body></html>
