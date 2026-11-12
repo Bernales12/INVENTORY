@@ -70,12 +70,25 @@ main.lg{display:grid;place-items:center;min-height:100vh;padding:20px;background
 .pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--acc);cursor:pointer;font:inherit;font-size:13px;font-weight:700;padding:8px 9px}
 .lf .b{width:100%;padding:12px;font-size:15px;border-radius:10px;margin-top:4px}
 #am{min-height:20px;font-size:13px;text-align:center}.cn{font-size:12px;color:var(--mut);text-align:center;margin:0}
+nav{background:linear-gradient(180deg,#2f6179,#1f4357);box-shadow:2px 0 18px rgba(8,30,42,.18)}
+nav h1{font-size:19px}nav button{transition:background .15s}nav button:hover:not(.on){background:rgba(255,255,255,.1)}
+h2{font-size:24px;letter-spacing:-.3px}
+.card{border-radius:16px;box-shadow:0 1px 2px rgba(8,30,42,.06),0 6px 20px rgba(8,30,42,.07)}
+.k{border:0;border-left:4px solid var(--acc)}.k b{font-size:28px}
+button.b{background:linear-gradient(180deg,#3a6e87,#2a5468);box-shadow:0 1px 2px rgba(8,30,42,.25);transition:transform .1s,filter .15s}
+button.b:hover{filter:brightness(1.12)}button.b:active{transform:translateY(1px)}
+button.b.o{background:transparent;box-shadow:none;color:var(--ink)}
+th{text-transform:uppercase;font-size:11px;letter-spacing:.6px}tr:hover td{background:rgba(63,106,128,.07)}
+.pill{padding:3px 11px}.p-Delivered{background:rgba(31,117,86,.14)}.p-Pending,.p-Out{background:rgba(143,95,0,.14)}
+.pk button{border-radius:12px;transition:transform .12s,border-color .15s}.pk button:hover:not(:disabled){border-color:var(--acc);transform:translateY(-1px)}
+input:focus,select:focus{border-color:var(--acc)}dialog{box-shadow:0 24px 70px rgba(8,30,42,.4)}
 </style></head><body>
 <a class="skip" href="#main">Skip to content</a>
 <div class="app"><nav id="nav" aria-label="Main"></nav><main id="main" tabindex="-1"></main></div>
 <div id="toast" role="status" aria-live="polite"></div>
 <dialog id="lg" aria-labelledby="lgh"><div class="dh"><button class="b o" onclick="this.closest('dialog').close()">Close</button></div><div id="lgb"></div></dialog>
 <dialog id="ed" aria-labelledby="edh"><div class="dh"><button class="b o" onclick="this.closest('dialog').close()">Close</button></div><div id="edb"></div></dialog>
+<dialog id="cf" aria-labelledby="cfm" style="width:min(380px,92vw)"><div style="padding:20px"><p id="cfm" style="margin:0 0 16px;font-weight:600"></p><div class="f" style="justify-content:flex-end"><button class="b o" id="cfn">No, go back</button><button class="b" id="cfy">OK</button></div></div></dialog>
 <div id="cb" role="region" aria-label="Analytics choice" hidden><p>May we count anonymous visits to improve the app? Sign-in storage is always on because the app needs it. See the Cookie &amp; Storage Policy.</p><div><button class="b" onclick="setC('no')">Essential only</button><button class="b o" onclick="setC('yes')">Allow analytics</button></div></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 <script src="config.js"></script>
@@ -168,6 +181,7 @@ const pf='<label>'+(rs?'New password':'Password')+'<span class="pw"><input id="p
 m.innerHTML='<div class="card lc" onkeydown="if(event.key===\'Enter\')authGo()"><div class="lb"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div><h1>Tindahan</h1><p class="ls">Inventory, profit and sales</p>'+
 (!db?'<p class="bad">Supabase is not connected. '+esc(why)+'</p>':'<div class="lf">'+uf+pf+'<button class="b" onclick="authGo()">'+T+'</button><div id="am" role="status" aria-live="polite"></div><p class="cn">By signing in you agree to the <button class="lk" style="font-weight:400" onclick="legal(\'terms\')">Terms</button> and have read the <button class="lk" style="font-weight:400" onclick="legal(\'privacy\')">Privacy Policy</button>.</p></div>')+foot()+'</div>'}
 
+function ask(m,ok){return new Promise(r=>{const d=document.getElementById('cf'),y=document.getElementById('cfy');let v=false;document.getElementById('cfm').textContent=m;y.textContent=ok||'OK';y.onclick=()=>{v=true;d.close()};document.getElementById('cfn').onclick=()=>d.close();d.onclose=()=>r(v);d.showModal()})}
 /* ---- Inventory: view + edit in pop-up only ---- */
 function openEdit(id){const p=S.products.find(x=>x.id==id);if(!p)return;
 document.getElementById('edb').innerHTML='<h3 id="edh">Edit '+esc(pn(p))+'</h3><div class="f" style="flex-direction:column;align-items:stretch"><label>Name<input id="en" value="'+esc(p.name)+'"></label><label>Size (e.g. 100 ml)<input id="ez" value="'+esc(p.size)+'"></label><label>Original price (puhunan)<input id="ec" type="number" min="0" value="'+p.cost+'"></label><label>Selling price<input id="ep" type="number" min="0" value="'+p.price+'"></label></div><p class="mut" style="font-size:13px">Stock: <b>'+p.stock+'</b>. To add stock, use the Restock tab.</p><div class="f"><button class="b" onclick="saveEdit('+id+')">Save</button><button class="b o" onclick="delP('+id+')">Delete product</button></div>';
@@ -175,7 +189,7 @@ document.getElementById('ed').showModal()}
 async function saveEdit(id){const name=val('en'),size=val('ez'),cost=num('ec'),price=num('ep');
 if(!name||cost<=0||price<=0)return toast('Fill in the name, original price and selling price.');
 if(await run(db.from('products').update({name,size,cost,price}).eq('id',id))){document.getElementById('ed').close();toast('Saved.');load()}}
-async function delP(id){const p=S.products.find(x=>x.id==id);if(!confirm('Delete '+(p?pn(p):'this product')+'? This cannot be undone.'))return;
+async function delP(id){const p=S.products.find(x=>x.id==id);if(!await ask('Delete '+(p?pn(p):'this product')+'? This cannot be undone.','Delete'))return;
 if(await run(db.from('products').delete().eq('id',id))){document.getElementById('ed').close();if(rsel==id)rsel=null;if(osel==id)osel=null;load()}}
 
 /* ---- Restock: existing product or new product ---- */
@@ -186,12 +200,13 @@ async function restock(){const p=S.products.find(x=>x.id==rsel),q=Math.floor(par
 if(!p)return toast('Click a product first.');if(q<=0)return toast('Enter how many to buy.');const c=q*p.cost;
 if(c>cash())return toast('Kulang ang pondo: need '+P(c)+', you have '+P(cash())+' (short by '+P(c-cash())+').');
 if(await run(db.from('products').update({stock:p.stock+q}).eq('id',p.id))&&await run(db.from('ledger').insert({t:'restock',a:c,note:q+' × '+pn(p)+' @ '+P(p.cost)}))){await load();toast('Restocked '+q+' '+pn(p)+' for '+P(c))}}
-async function newProduct(){const name=val('pn'),size=val('pz'),cost=num('pc'),price=num('pp'),stock=Math.floor(num('ps')),c=stock*cost;
+async function newProduct(x){x=x||'p';const g=k=>x+k,name=val(g('n')),size=val(g('z')),cost=num(g('c')),price=num(g('p')),stock=Math.floor(num(g('s'))),c=stock*cost;
 if(!name||cost<=0||price<=0)return toast('Fill in the name, original price and selling price.');
 if(c>cash())return toast('Kulang ang pondo: need '+P(c)+', you have '+P(cash())+' (short by '+P(c-cash())+').');
 if(!await run(db.from('products').insert({name,size,cost,price,stock})))return;
 if(stock>0)await run(db.from('ledger').insert({t:'restock',a:c,note:stock+' × '+name+(size?' '+size:'')+' @ '+P(cost)}));
-await load();toast('Added '+name+(size?' '+size:'')+(stock>0?' with '+stock+' in stock ('+P(c)+')':''))}
+document.getElementById('ed').close();await load();toast('Added '+name+(size?' '+size:'')+(stock>0?' with '+stock+' in stock ('+P(c)+')':''))}
+function openAdd(){document.getElementById('edb').innerHTML='<h3 id="edh">Add product</h3><div class="f" style="flex-direction:column;align-items:stretch"><label>Name<input id="an"></label><label>Size (e.g. 100 ml)<input id="az"></label><label>Original price (puhunan)<input id="ac" type="number" min="0"></label><label>Selling price<input id="ap" type="number" min="0"></label><label>Starting stock (cost comes out of cash)<input id="as" type="number" min="0" value="0"></label></div><div class="f" style="margin-top:12px"><button class="b" onclick="newProduct(\'a\')">Add product</button></div>';document.getElementById('ed').showModal()}
 
 /* ---- Sales (walk-in): cart, Buy, Cancel ---- */
 function pickO(id){osel=id;draw();const e=document.getElementById('oq');if(e)e.focus()}
@@ -209,13 +224,14 @@ for(const l of L){const p=S.products.find(x=>x.id==l.pid);
 ok=await run(db.from('products').update({stock:p.stock-l.q}).eq('id',p.id))&&await run(db.from('orders').insert({pid:p.id,name:pn(p),qty:l.q,cost:p.cost,price:p.price}));if(!ok)break}
 selling=false;cart=[];osel=null;oqv=1;await load();if(ok)toast('Sale created. Press Buy when paid.')}
 async function adv(id){const o=S.orders.find(x=>x.id==id);if(!o)return;
+if(!await ask('Mark '+o.qty+' × '+o.name+' as bought? '+P(o.price*o.qty)+' goes into cash.','Buy'))return;
 if(await run(db.from('orders').update({st:'Delivered'}).eq('id',id))&&await run(db.from('ledger').insert({t:'sale',a:o.price*o.qty,note:o.qty+' × '+o.name}))){await load();toast('Bought: +'+P(o.price*o.qty))}}
-async function buyAll(){const L=pending();if(!L.length)return;
-if(!confirm('Mark all '+L.length+' pending sale(s) as bought? '+P(sum(L,o=>o.price*o.qty))+' goes into cash.'))return;
-for(const o of L){if(!(await run(db.from('orders').update({st:'Delivered'}).eq('id',o.id))&&await run(db.from('ledger').insert({t:'sale',a:o.price*o.qty,note:o.qty+' × '+o.name}))))break}
-await load();toast('All pending sales marked as bought.')}
+async function buyAll(){const L=pending();if(!L.length)return;const t=sum(L,o=>o.price*o.qty);
+if(!await ask('Mark all '+L.length+' pending sale(s) as bought? '+P(t)+' goes into cash.','Buy all'))return;
+for(const o of L){if(!await run(db.from('orders').update({st:'Delivered'}).eq('id',o.id)))return load()}
+await run(db.from('ledger').insert({t:'sale',a:t,note:L.map(o=>o.qty+' × '+o.name).join(', ')}));await load();toast('All pending sales marked as bought.')}
 async function cancel(id){const o=S.orders.find(x=>x.id==id),p=S.products.find(x=>x.id==o.pid);
-if(!confirm('Cancel '+o.qty+' × '+o.name+'? The items go back to stock.'))return;
+if(!await ask('Cancel '+o.qty+' × '+o.name+'? The items go back to stock.','Yes, cancel'))return;
 if(await run(db.from('orders').update({st:'Cancelled'}).eq('id',id))&&(!p||await run(db.from('products').update({stock:p.stock+o.qty}).eq('id',p.id))))load()}
 
 /* ---- Cash ---- */
@@ -241,9 +257,9 @@ return '<h2>Welcome back!</h2><div class="grid">'+
 (L.length?'<div class="note">'+L.length+' item(s) low or out. Restocking to 10 each costs <b>'+P(need())+'</b>. '+(short?'<span class="bad">Cash is short by '+P(short)+'.</span>':'<span class="good">You have enough cash.</span>')+'</div>':'<div class="note good">Stock levels look fine.</div>')+
 '</div><div class="card"><h3>Profit per month</h3>'+chart()+'</div><div class="card"><h3>Top products by profit</h3>'+(t.length?t.map(([n,v])=>'<div class="bar"><span>'+esc(n)+'</span><i style="width:'+Math.max(6,v/mx*100)+'px"></i><span>'+P(v)+'</span></div>').join(''):'<p>No bought sales yet. Press Buy on a sale to see profit here.</p>')+'</div></div>'}
 
-function inv(){return '<h2>Inventory</h2><div class="card sc"><table><caption class="sr">Products</caption><tr><th scope="col">Product</th><th scope="col">Original price</th><th scope="col">Selling price</th><th scope="col">Profit / unit</th><th scope="col">Stock</th><th scope="col"><span class="sr">Edit</span></th></tr>'+
-(S.products.length?S.products.map(p=>'<tr><td><button class="lk" onclick="openEdit('+p.id+')" aria-label="Edit '+esc(pn(p))+'">'+esc(p.name)+'</button>'+(p.size?'<br><small class="mut">'+esc(p.size)+'</small>':'')+'</td><td>'+P(p.cost)+'</td><td>'+P(p.price)+'</td><td class="'+(p.price>p.cost?'good':'bad')+'">'+P(p.price-p.cost)+'</td><td class="'+(p.stock==0?'bad':p.stock<=5?'warn':'')+'"><b>'+p.stock+'</b>'+(p.stock==0?' <small>(out)</small>':p.stock<=5?' <small>(low)</small>':'')+'</td><td><button class="b o" onclick="openEdit('+p.id+')">Edit</button></td></tr>').join(''):'<tr><td colspan="6" class="mut">No products yet. Add one in Restock.</td></tr>')+
-'</table></div><p class="mut" style="font-size:13px">Click a product to edit it. To add stock or a new product, go to the Restock tab.</p>'}
+function inv(){return '<div class="f" style="justify-content:space-between;align-items:center;margin-bottom:14px"><h2 style="margin:0">Inventory</h2><button class="b" onclick="openAdd()">+ Add product</button></div><div class="card sc"><table><caption class="sr">Products</caption><tr><th scope="col">Product</th><th scope="col">Original price</th><th scope="col">Selling price</th><th scope="col">Profit / unit</th><th scope="col">Stock</th><th scope="col"><span class="sr">Edit</span></th></tr>'+
+(S.products.length?S.products.map(p=>'<tr><td><button class="lk" onclick="openEdit('+p.id+')" aria-label="Edit '+esc(pn(p))+'">'+esc(p.name)+'</button>'+(p.size?'<br><small class="mut">'+esc(p.size)+'</small>':'')+'</td><td>'+P(p.cost)+'</td><td>'+P(p.price)+'</td><td class="'+(p.price>p.cost?'good':'bad')+'">'+P(p.price-p.cost)+'</td><td class="'+(p.stock==0?'bad':p.stock<=5?'warn':'')+'"><b>'+p.stock+'</b>'+(p.stock==0?' <small>(out)</small>':p.stock<=5?' <small>(low)</small>':'')+'</td><td><button class="b o" onclick="openEdit('+p.id+')">Edit</button></td></tr>').join(''):'<tr><td colspan="6" class="mut">No products yet. Click + Add product.</td></tr>')+
+'</table></div><p class="mut" style="font-size:13px">Click a product to edit it. To add stock to an existing product, use the Restock tab.</p>'}
 
 function rsv(){const p=S.products.find(x=>x.id==rsel);
 return '<h2>Restock</h2><div class="grid w"><div class="card"><h3>Restock a product</h3><p class="mut" style="margin-top:0;font-size:13px">Click a product from your inventory, then enter how many to buy.</p><div class="pk">'+
@@ -261,11 +277,12 @@ return '<h2>Sales</h2><div class="grid w"><div class="card"><h3>New sale</h3><p 
 '<div class="card sc"><div class="f" style="justify-content:space-between;align-items:center;margin-bottom:8px"><h3 style="margin:0">Sales</h3>'+(pd.length>1?'<button class="b o" onclick="buyAll()">Buy all pending ('+pd.length+')</button>':'')+'</div><table><caption class="sr">Sales</caption><tr><th scope="col">Date</th><th scope="col">Item</th><th scope="col">Total</th><th scope="col">Profit</th><th scope="col">Status</th><th scope="col"><span class="sr">Actions</span></th></tr>'+
 S.orders.slice().reverse().map(o=>'<tr><td>'+new Date(o.d).toLocaleDateString('en-PH',{month:'short',day:'numeric'})+'</td><td>'+o.qty+' × '+esc(o.name)+'</td><td>'+P(o.price*o.qty)+'</td><td class="good">'+P((o.price-o.cost)*o.qty)+'</td><td><span class="pill p-'+o.st+'">'+(lab[o.st]||esc(o.st))+'</span></td><td>'+((o.st==='Pending'||o.st==='Out')?'<button class="b" onclick="adv('+o.id+')">Buy</button> <button class="b o" onclick="cancel('+o.id+')">Cancel</button>':'')+'</td></tr>').join('')+'</table></div><p class="mut" style="font-size:13px">Money goes into your cash only after you press Buy. Cancel puts the items back in stock. Do not type customer names or addresses here.</p>'}
 
-function cashv(){const L=S.ledger.slice().reverse();
+function histG(){const G=[];S.ledger.slice().reverse().forEach(e=>{const m=/^(\d+) × (.+)$/.exec(e.note||''),k=m&&(e.t==='sale'||e.t==='restock')?e.t+new Date(e.d).toDateString()+m[2]:null,g=k&&G.find(x=>x.k===k);if(g){g.q+=+m[1];g.a+=e.a;g.disp=g.q+' × '+m[2]}else G.push({k,t:e.t,d:e.d,a:e.a,q:m?+m[1]:0,disp:e.note})});return G}
+function cashv(){const L=histG();
 return '<h2>Cash &amp; withdrawals</h2><div class="grid"><div class="card k"><b>'+P(cash())+'</b><span>Cash on hand</span></div><div class="card k"><b class="good">'+P(safe())+'</b><span>Profit you can take</span></div><div class="card k"><b>'+P(taken())+'</b><span>Taken so far</span></div><div class="card k"><b class="'+(need()>cash()?'bad':'')+'">'+P(need())+'</b><span>Needed to restock low items</span></div></div>'+
 '<div class="grid w"><div class="card"><h3>Take money</h3><div class="f"><label>Amount<input id="wa" type="number" min="0" value="'+wd+'" oninput="preview()"></label><label>For<input id="wt" placeholder="Personal use"></label><button class="b" onclick="withdraw()">Take money</button></div><div id="wn" class="note" aria-live="polite"></div></div>'+
 '<div class="card"><h3>Add capital</h3><div class="f"><label>Amount<input id="ca" type="number" min="0"></label><button class="b" onclick="capital()">Add</button></div></div></div>'+
-'<div class="card sc"><h3>History</h3><table><caption class="sr">Cash history</caption><tr><th scope="col">Date</th><th scope="col">Type</th><th scope="col">Details</th><th scope="col">Amount</th></tr>'+L.map(e=>{const inn=e.t==='sale'||e.t==='capital';return '<tr><td>'+new Date(e.d).toLocaleDateString('en-PH',{month:'short',day:'numeric'})+'</td><td>'+({sale:'Sale',capital:'Capital',restock:'Restock',withdraw:'Withdrawal'})[e.t]+'</td><td>'+esc(e.note)+'</td><td class="'+(inn?'good':'bad')+'">'+(inn?'+':'−')+P(e.a)+'</td></tr>'}).join('')+'</table></div>'}
+'<div class="card sc"><h3>History</h3><table><caption class="sr">Cash history</caption><tr><th scope="col">Date</th><th scope="col">Type</th><th scope="col">Details</th><th scope="col">Amount</th></tr>'+L.map(e=>{const inn=e.t==='sale'||e.t==='capital';return '<tr><td>'+new Date(e.d).toLocaleDateString('en-PH',{month:'short',day:'numeric'})+'</td><td>'+({sale:'Sale',capital:'Capital',restock:'Restock',withdraw:'Withdrawal'})[e.t]+'</td><td>'+esc(e.disp)+'</td><td class="'+(inn?'good':'bad')+'">'+(inn?'+':'−')+P(e.a)+'</td></tr>'}).join('')+'</table></div>'}
 
 function setv(){return '<h2>Account settings</h2><p style="margin-top:-6px">Current username: <b>'+esc(uname(user.email))+'</b></p><div class="grid w"><div class="card"><h3>Change username</h3><div class="f"><label>New username<input id="nu" autocomplete="off"></label><label>Current password<input id="cu_pw" type="password" autocomplete="current-password"></label><button class="b" onclick="chgUser()">Save username</button></div></div><div class="card"><h3>Change password</h3><div class="f"><label>Current password<input id="cp_old" type="password" autocomplete="current-password"></label><label>New password<input id="cp_new" type="password" autocomplete="new-password"></label><label>Confirm new password<input id="cp_new2" type="password" autocomplete="new-password"></label><button class="b" onclick="chgPass()">Save password</button></div></div></div><p class="mut" style="font-size:13px">To access, correct or delete your data, see the Privacy Policy below.</p>'}
 async function chgUser(){let n=val('nu').toLowerCase();const pw=document.getElementById('cu_pw').value;
