@@ -85,7 +85,7 @@ const T={in:'Sign in',up:'Create account',forgot:'Reset password',reset:'Set a n
 const f=(id,l,ac)=>'<label>'+l+'<input id="'+id+'" type="'+(id==='em'?'email':'password')+'" autocomplete="'+ac+'"></label>';
 const lk=(m,t)=>'<button class="b o" onclick="setMode(\''+m+'\')">'+t+'</button>';
 document.getElementById('main').innerHTML='<div class="card" style="max-width:380px;margin:8vh auto" onkeydown="if(event.key===\'Enter\')authGo()"><h2>Tindahan</h2><h3>'+T+'</h3>'+
-(!db?'<p class="bad">Supabase is not set up yet. Open config.js and add your project URL and anon key.</p>':
+(!db?'<p class="bad">Supabase is not connected. '+esc(why)+'</p>':
 '<div class="f" style="flex-direction:column;align-items:stretch">'+(mode!=='reset'?f('em','Email','email'):'')+(mode!=='forgot'?f('pw',mode==='in'?'Password':'New password',mode==='in'?'current-password':'new-password'):'')+(mode==='up'?f('pw2','Confirm password','new-password'):'')+
 '<button class="b" onclick="authGo()">'+T+'</button>'+(mode==='in'?lk('up','Create account')+lk('forgot','Forgot password?'):mode==='reset'?'':lk('in','Back to sign in'))+'<div id="am" role="status" aria-live="polite"></div></div>')+'</div>'}
 
@@ -146,6 +146,10 @@ function draw(){if(!user){loginView();return}const T=[['dash','Dashboard'],['inv
 document.getElementById('nav').innerHTML='<h1>Tindahan</h1>'+T.map(t=>'<button class="'+(tab==t[0]?'on':'')+'" onclick="go(\''+t[0]+'\')">'+t[1]+'</button>').join('');
 document.getElementById('nav').insertAdjacentHTML('beforeend','<button onclick="signOut()" style="margin-top:auto">Sign out<br><small>'+esc(user.email)+'</small></button>');
 document.getElementById('main').innerHTML=({dash,inv,ord,cash:cashv})[tab]();if(tab=='cash'&&wd)preview()}
-try{if(C.SUPABASE_URL&&!C.SUPABASE_URL.includes('YOUR-PROJECT'))db=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY)}catch(e){}
+let why='';
+if(!window.APP_CONFIG)why='config.js was not found. Keep it in the same folder as index.html.';
+else if(!C.SUPABASE_URL||!C.SUPABASE_ANON_KEY||C.SUPABASE_URL.includes('YOUR-PROJECT')||C.SUPABASE_ANON_KEY.includes('YOUR-ANON'))why='config.js still has the placeholder values.';
+else if(typeof supabase==='undefined')why='The Supabase library did not load. Check your internet connection or ad-blocker.';
+else try{db=supabase.createClient(C.SUPABASE_URL,C.SUPABASE_ANON_KEY)}catch(e){why=e.message}
 if(db){db.auth.onAuthStateChange((ev,s)=>{if(ev==='PASSWORD_RECOVERY'){mode='reset';user=null;loginView();return}user=s?s.user:null;if(user)load();else{mode='in';draw()}})}else draw();
 </script></body></html>
