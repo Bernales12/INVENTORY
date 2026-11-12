@@ -34,6 +34,18 @@ button.b.o{background:transparent;color:var(--ink);border:1px solid var(--line)}
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--side);color:#fff;padding:10px 16px;border-radius:10px;display:none;max-width:90vw;z-index:9}
 .note{padding:10px 12px;border-radius:8px;background:var(--bg);font-size:14px;margin-top:10px}
 @media(max-width:720px){.app{flex-direction:column}nav{width:auto;flex-direction:row;overflow-x:auto;padding:10px;position:sticky;top:0}nav h1{display:none}nav button{border-radius:10px;white-space:nowrap}}
+main.lg{display:grid;place-items:center;min-height:100vh;padding:20px;background:linear-gradient(160deg,#1c4153,#3a6f88 58%,#7fb0c8)}
+.lc{width:100%;max-width:380px;padding:32px 28px 28px;border-radius:18px;text-align:center;box-shadow:0 24px 60px rgba(8,30,42,.35)}
+.lb{width:56px;height:56px;border-radius:16px;background:var(--side);color:#e3f0f5;display:grid;place-items:center;margin:0 auto 14px}
+.lc h1{margin:0;font-size:27px;font-weight:800;letter-spacing:-.3px}
+.ls{margin:4px 0 24px;color:var(--mut);font-size:14px}
+.lf{display:flex;flex-direction:column;gap:14px;text-align:left}
+.lf label{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:var(--mut)}
+.lf input{width:100%;padding:12px 13px;font-size:15px;border-radius:10px}
+.pw{position:relative;display:block}.pw input{padding-right:66px}
+.pw button{position:absolute;right:6px;top:50%;transform:translateY(-50%);border:0;background:none;color:var(--acc);cursor:pointer;font:inherit;font-size:13px;font-weight:700;padding:6px 9px}
+.lf .b{width:100%;padding:12px;font-size:15px;border-radius:10px;margin-top:4px}
+#am{min-height:20px;font-size:13px;text-align:center}
 </style></head><body>
 <div class="app"><nav id="nav"></nav><main id="main"></main></div><div id="toast" role="status"></div>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
@@ -83,14 +95,13 @@ if(mode==='forgot')ok('Reset link sent. Check your email.');
 else if(mode==='reset')mode='in';
 }
 async function signOut(){await db.auth.signOut();S={products:[],orders:[],ledger:[]}}
-function loginView(){document.getElementById('nav').innerHTML='';
-const T={in:'Sign in',up:'Create account',forgot:'Reset password',reset:'Set a new password'}[mode];
-const f=(id,l,ac)=>'<label>'+l+'<input id="'+id+'" type="'+(id==='em'?'text':'password')+'" autocomplete="'+ac+'"></label>';
-const lk=(m,t)=>'<button class="b o" onclick="setMode(\''+m+'\')">'+t+'</button>';
-document.getElementById('main').innerHTML='<div class="card" style="max-width:380px;margin:8vh auto" onkeydown="if(event.key===\'Enter\')authGo()"><h2>Tindahan</h2><h3>'+T+'</h3>'+
-(!db?'<p class="bad">Supabase is not connected. '+esc(why)+'</p>':
-'<div class="f" style="flex-direction:column;align-items:stretch">'+(mode!=='reset'?f('em','Username','username'):'')+(mode!=='forgot'?f('pw',mode==='in'?'Password':'New password',mode==='in'?'current-password':'new-password'):'')+
-'<button class="b" onclick="authGo()">'+T+'</button>'+(mode==='in'?'':mode==='reset'?'':lk('in','Back to sign in'))+'<div id="am" role="status" aria-live="polite"></div></div>')+'</div>'}
+function tp(){const e=document.getElementById('pw'),b=e.nextElementSibling,h=e.type==='password';e.type=h?'text':'password';b.textContent=h?'Hide':'Show'}
+function loginView(){const m=document.getElementById('main');document.getElementById('nav').style.display='none';m.className='lg';
+const rs=mode==='reset',T=rs?'Save new password':'Sign in';
+const uf=rs?'':'<label>Username<input id="em" type="text" autocomplete="username" autocapitalize="none" spellcheck="false" placeholder="Enter username"></label>';
+const pf='<label>'+(rs?'New password':'Password')+'<span class="pw"><input id="pw" type="password" autocomplete="'+(rs?'new-password':'current-password')+'" placeholder="Enter password"><button type="button" onclick="tp()">Show</button></span></label>';
+m.innerHTML='<div class="card lc" onkeydown="if(event.key===\'Enter\')authGo()"><div class="lb"><svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div><h1>Tindahan</h1><p class="ls">Inventory, profit and delivery</p>'+
+(!db?'<p class="bad">Supabase is not connected. '+esc(why)+'</p>':'<div class="lf">'+uf+pf+'<button class="b" onclick="authGo()">'+T+'</button><div id="am" role="status" aria-live="polite"></div></div>')+'</div>'}
 
 async function addProduct(){const name=val('pn'),size=val('pz'),cost=num('pc'),price=num('pp'),stock=Math.floor(num('ps'));
 if(!name||cost<=0||price<=0)return toast('Fill in the name, original price and selling price.');
@@ -158,7 +169,7 @@ if(a.length<6)return toast('New password must be at least 6 characters.');if(a!=
 if(!await run(db.auth.signInWithPassword({email:user.email,password:o})))return;
 if(await run(db.auth.updateUser({password:a}))){toast('Password changed.');draw()}}
 
-function draw(){if(!user){loginView();return}const T=[['dash','Dashboard'],['inv','Inventory'],['ord','Orders & delivery'],['cash','Cash & withdrawals'],['set','Settings']];
+function draw(){if(!user){loginView();return}document.getElementById('nav').style.display='';document.getElementById('main').className='';const T=[['dash','Dashboard'],['inv','Inventory'],['ord','Orders & delivery'],['cash','Cash & withdrawals'],['set','Settings']];
 document.getElementById('nav').innerHTML='<h1>Tindahan</h1>'+T.map(t=>'<button class="'+(tab==t[0]?'on':'')+'" onclick="go(\''+t[0]+'\')">'+t[1]+'</button>').join('');
 document.getElementById('nav').insertAdjacentHTML('beforeend','<button onclick="signOut()" style="margin-top:auto">Sign out<br><small>'+esc(uname(user.email))+'</small></button>');
 document.getElementById('main').innerHTML=({dash,inv,ord,cash:cashv,set:setv})[tab]();if(tab=='cash'&&wd)preview()}
