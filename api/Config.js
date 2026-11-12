@@ -1,7 +1,7 @@
 // CONFIG — Supabase
 // Kunin sa Supabase: Project Settings -> API
-const SUPABASE_URL = 'YOUR_PROJECT_URL';   // https://xxxx.supabase.co
-const SUPABASE_KEY = 'YOUR_ANON_KEY';      // anon public key lang, HUWAG ang database password
+const SUPABASE_URL = 'https://ztxmtctnfmjlfkniewwi.supabase.co';   // https://xxxx.supabase.co
+const SUPABASE_KEY = 'sb_publishable_5QblJ9Qc17h5z_yd8w--cg_YOHNL5KA';      // anon public key lang, HUWAG ang database password
 
 // Default app settings (puwede pa ring palitan sa Settings tab)
 const STORE_NAME = 'Pharmacy Store';
