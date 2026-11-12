@@ -107,6 +107,7 @@ nav button{flex-direction:column;gap:2px;font-size:11px;padding:6px 8px;min-widt
 .f label{flex:1 1 130px}.f input{width:100%}
 }
 .sl{max-height:min(62vh,540px);overflow-y:auto}.sl th{position:sticky;top:0;background:var(--card);z-index:1}
+@media(max-width:720px){nav{overflow:visible}nav button{flex:1 1 0;min-width:0;padding:6px 2px;font-size:10.5px}}
 </style></head><body>
 <a class="skip" href="#main">Skip to content</a>
 <div class="app"><nav id="nav" aria-label="Main"></nav><main id="main" tabindex="-1"></main></div>
@@ -155,7 +156,7 @@ function consentUI(){document.getElementById('cb').hidden=false;document.querySe
 
 /* ---- Legal pages: templates, not legal advice. Business facts come only from APP_CONFIG.BUSINESS. ---- */
 const LN={privacy:'Privacy Policy',terms:'Terms of Use',cookies:'Cookie & Storage Policy',refund:'Refund & Returns'};
-function BZ(){const b=C.BUSINESS||{},f=(k,l)=>b[k]?esc(b[k]):'<mark>[ILAGAY: '+l+']</mark>';return{n:f('name','business name'),o:f('owner','owner / operator'),a:f('address','business address'),e:f('email','contact email'),p:f('phone','phone'),d:f('dpo','data protection contact'),r:f('refundDays','number of days'),t:f('dtiReg','DTI/SEC/BIR registration, if any')}}
+function BZ(){const b=C.BUSINESS||{},f=(k,l)=>b[k]?esc(b[k]):'<mark>[ILAGAY: '+l+']</mark>';return{n:f('name','Draper store'),o:f('owner','RALF SOHRAB BERNALES'),a:f('address','LABU LABU SHARIFF AGUAK ,MAGUINDANO DEL SUR'),e:f('email','ralfsohrabbernales@gmail.com'),p:f('phone','09451706681'),d:f('dpo','data protection contact'),r:f('refundDays','number of days'),t:f('dtiReg','DTI/SEC/BIR registration, if any')}}
 function doc(k){const b=BZ(),h=x=>'<h3>'+x+'</h3>',up='<p class="mut">Last updated: 12 November 2026</p>',who='<p>Operated by '+b.n+' ('+b.o+'), '+b.a+'. Contact: '+b.e+', '+b.p+'. Registration: '+b.t+'.</p>';
 if(k==='privacy')return'<h2 id="lgh">Privacy Policy</h2>'+up+who+'<p>This notice explains how we handle personal data in Tindahan, following the Data Privacy Act of 2012 (RA 10173).</p>'+
 h('What we collect')+'<p>Your username or email and password (the password is stored only as a hash by our login provider, Supabase), and the business records you enter: products, prices, stock, orders and cash entries. We do not ask for customer names, addresses or payment card numbers. Please do not type them into any field. Servers also log technical data such as IP address and browser type.</p>'+
@@ -199,7 +200,7 @@ if(r.error)return bad(r.error.message);
 if(mode==='forgot')ok('Reset link sent. Check your email.');
 else if(mode==='reset')mode='in';
 }
-async function signOut(){await db.auth.signOut();S={products:[],orders:[],ledger:[]};cart=[];rsel=null;osel=null}
+async function signOut(){try{await db.auth.signOut({scope:'local'})}catch(e){}user=null;S={products:[],orders:[],ledger:[]};cart=[];rsel=null;osel=null;tab='dash';mode='in';draw()}
 function tp(){const e=document.getElementById('pw'),b=e.nextElementSibling,h=e.type==='password';e.type=h?'text':'password';b.textContent=h?'Hide':'Show';b.setAttribute('aria-pressed',h)}
 function loginView(){const m=document.getElementById('main');document.getElementById('nav').style.display='none';m.className='lg';
 const rs=mode==='reset',T=rs?'Save new password':'Sign in';
@@ -320,7 +321,7 @@ return '<h2>Cash &amp; withdrawals</h2><div class="grid"><div class="card k"><b>
 '<div class="card"><h3>Add capital</h3><div class="f"><label>Amount<input id="ca" type="number" min="0"></label><button class="b" onclick="capital()">Add</button></div></div></div>'+
 '<div class="card"><div class="f" style="justify-content:space-between;align-items:center;margin-bottom:8px"><h3 style="margin:0">History</h3><span class="f">'+msel(mC,S.ledger,'mC')+'<button class="b o" onclick="xlC()">⬇ Excel</button></span></div><div class="sc sl"><table><caption class="sr">Cash history</caption><tr><th scope="col">Date</th><th scope="col">Type</th><th scope="col">Details</th><th scope="col">Amount</th></tr>'+L.map(e=>{const inn=e.t==='sale'||e.t==='capital';return '<tr><td>'+new Date(e.d).toLocaleDateString('en-PH',{month:'short',day:'numeric'})+'</td><td>'+({sale:'Sale',capital:'Capital',restock:'Restock',withdraw:'Withdrawal'})[e.t]+'</td><td>'+esc(e.disp)+'</td><td class="'+(inn?'good':'bad')+'">'+(inn?'+':'−')+P(e.a)+'</td></tr>'}).join('')+'</table></div><div class="note"><b>Total in:</b> <span class="good">'+P(ti)+'</span> · <b>Total out:</b> <span class="bad">'+P(to)+'</span></div></div>'}
 
-function setv(){return '<h2>Account settings</h2><p style="margin-top:-6px">Current username: <b>'+esc(uname(user.email))+'</b></p><div class="grid w"><div class="card"><h3>Change username</h3><div class="f"><label>New username<input id="nu" autocomplete="off"></label><label>Current password<input id="cu_pw" type="password" autocomplete="current-password"></label><button class="b" onclick="chgUser()">Save username</button></div></div><div class="card"><h3>Change password</h3><div class="f"><label>Current password<input id="cp_old" type="password" autocomplete="current-password"></label><label>New password<input id="cp_new" type="password" autocomplete="new-password"></label><label>Confirm new password<input id="cp_new2" type="password" autocomplete="new-password"></label><button class="b" onclick="chgPass()">Save password</button></div></div></div><p class="mut" style="font-size:13px">To access, correct or delete your data, see the Privacy Policy below.</p>'}
+function setv(){return '<h2>Account settings</h2><p style="margin-top:-6px">Current username: <b>'+esc(uname(user.email))+'</b></p><div class="grid w"><div class="card"><h3>Change username</h3><div class="f"><label>New username<input id="nu" autocomplete="off"></label><label>Current password<input id="cu_pw" type="password" autocomplete="current-password"></label><button class="b" onclick="chgUser()">Save username</button></div></div><div class="card"><h3>Change password</h3><div class="f"><label>Current password<input id="cp_old" type="password" autocomplete="current-password"></label><label>New password<input id="cp_new" type="password" autocomplete="new-password"></label><label>Confirm new password<input id="cp_new2" type="password" autocomplete="new-password"></label><button class="b" onclick="chgPass()">Save password</button></div></div></div><p class="mut" style="font-size:13px">To access, correct or delete your data, see the Privacy Policy below.</p><div class="card" style="margin-top:14px"><h3>Sign out</h3><button class="b o" onclick="signOut()">Sign out</button></div>'}
 async function chgUser(){let n=val('nu').toLowerCase();const pw=document.getElementById('cu_pw').value;
 if(!n)return toast('Enter a new username.');if(!n.includes('@'))n+='@example.com';
 if(!/^\S+@\S+\.\S+$/.test(n))return toast('That username is not valid.');
