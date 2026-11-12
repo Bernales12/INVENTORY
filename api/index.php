@@ -45,11 +45,10 @@ details{margin:8px 0}summary{cursor:pointer;color:var(--pine);font-weight:500}
 <div id="msg" role="status"></div>
 <script>
 // Supabase URL and key live in config.js. App preferences live in the Settings tab.
-const {url:SB_URL,key:SB_KEY}=(window.APP_CONFIG&&window.APP_CONFIG.supabase)||{};
-let C={store:'Pharmacy Store',cur:'$',fee:0,expiry:90};
+let C={store:STORE_NAME,cur:CURRENCY,fee:DELIVERY_FEE,expiry:EXPIRY_WARNING_DAYS};
 try{Object.assign(C,JSON.parse(localStorage.getItem('pharmacyCfg')||'{}'))}catch(e){}
 let CUR=C.cur,db=null;
-if(/^https?:\/\//.test(SB_URL||'')&&SB_KEY&&!SB_KEY.startsWith('YOUR_'))db=supabase.createClient(SB_URL,SB_KEY);
+if(/^https?:\/\//.test(SUPABASE_URL)&&!SUPABASE_KEY.startsWith('YOUR_'))db=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
 const saveCfg=()=>{try{localStorage.setItem('pharmacyCfg',JSON.stringify(C))}catch(e){toast('Could not save settings in this browser',1)}};
 const $=s=>document.querySelector(s), esc=s=>String(s??'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 const money=n=>CUR+Number(n||0).toLocaleString(undefined,{minimumFractionDigits:2,maximumFractionDigits:2});
