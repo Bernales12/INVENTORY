@@ -41,7 +41,7 @@ button.b.o{background:transparent;color:var(--ink);border:1px solid var(--line)}
 <script src="config.js"></script>
 <script>
 /* Backup config: used only if config.js is missing or not found next to this file. */
-window.APP_CONFIG=window.APP_CONFIG||{SUPABASE_URL:'https://qejpamcqqemisvvkgiqs.supabase.co',SUPABASE_ANON_KEY:'sb_publishable_lm5YQ4cXV9A2sDvUNFdHyg_t_wkfvrK'};
+window.APP_CONFIG=window.APP_CONFIG||{SUPABASE_URL:'https://itwnasctmbnmdxghsmpy.supabase.co',SUPABASE_ANON_KEY:'sb_publishable_ITZWLZI-6pRrVynDhxDqPQ_H2fiNcMW'};
 </script>
 <script>
 const DAY=864e5,C=window.APP_CONFIG||{};let S={products:[],orders:[],ledger:[]},tab='dash',wd='',user=null,db=null;
